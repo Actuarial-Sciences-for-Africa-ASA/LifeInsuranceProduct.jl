@@ -11,4 +11,5 @@ SearchLight = "340e8cb6-72eb-11e8-37ce-c97ebeb32050"
 SearchLightPostgreSQL = "4327cdd6-4902-11ea-0272-430cea0431bd"
 Yields = "d7e99b2f-e7f3-4d9e-9f01-2338fc023ad3"
 
-
+[compat]
+Yields = "3"
