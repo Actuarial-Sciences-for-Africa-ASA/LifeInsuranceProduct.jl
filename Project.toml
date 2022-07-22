@@ -12,4 +12,9 @@ SearchLightPostgreSQL = "4327cdd6-4902-11ea-0272-430cea0431bd"
 Yields = "d7e99b2f-e7f3-4d9e-9f01-2338fc023ad3"
 
 [compat]
+LifeContingencies = "2"
 LifeInsuranceDataModel = "0.1"
+MortalityTables = "2"
+SearchLight = "2"
+SearchLightPostgreSQL = "2"
+Yields = "3
