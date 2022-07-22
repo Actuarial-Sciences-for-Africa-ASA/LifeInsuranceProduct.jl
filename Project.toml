@@ -1,0 +1,14 @@
+name = "LifeInsuranceProduct"
+uuid = "492f22fc-54e6-4f0f-bb9b-bacd199f5046"
+authors = ["Michael Fliegner <Michael.Fliegner@hamburg.de>"]
+version = "0.1.0"
+
+[deps]
+LifeContingencies = "c8f0d631-89cd-4a1f-93d0-7542c3692561"
+LifeInsuranceDataModel = "4892898e-25d7-46ce-b5c3-dea2164303ac"
+MortalityTables = "4780e19d-04b9-53dc-86c2-9e9aa59b5a12"
+SearchLight = "340e8cb6-72eb-11e8-37ce-c97ebeb32050"
+SearchLightPostgreSQL = "4327cdd6-4902-11ea-0272-430cea0431bd"
+Yields = "d7e99b2f-e7f3-4d9e-9f01-2338fc023ad3"
+
+
