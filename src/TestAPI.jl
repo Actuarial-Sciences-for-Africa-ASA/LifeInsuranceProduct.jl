@@ -17,4 +17,10 @@ pisDict = Dict{String,Any}(
 pis = ToStruct.tostruct(ProductItemSection, pisDict)
 tis1 = (pis.tariff_items[1])
 println(tis1.tariff_ref.rev.description)
+println(tis1.tariff_ref.rev.ref_role)
+println(tis1.tariff_ref.rev.ref_role)
+println(tis1.tariff_ref.ref.revision.ref_component)
+println(tis1.partner_refs[1].rev.ref_partner)
+println(tis1.partner_refs[1].rev.description)
+
 end
