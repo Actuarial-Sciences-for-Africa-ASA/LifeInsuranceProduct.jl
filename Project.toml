@@ -12,3 +12,12 @@ SearchLightPostgreSQL = "4327cdd6-4902-11ea-0272-430cea0431bd"
 ToStruct = "43ec2cc1-0e50-5406-a854-b7ff8fdb8dad"
 Yields = "d7e99b2f-e7f3-4d9e-9f01-2338fc023ad3"
 
+[compat]
+LifeContingencies = "2"
+LifeInsuranceDataModel = "0.1"
+MortalityTables = "2"
+SearchLight = "2"
+SearchLightPostgreSQL = "2"
+ToStruct = "2.3"
+Yields = "3"
+julia = "1.6"
