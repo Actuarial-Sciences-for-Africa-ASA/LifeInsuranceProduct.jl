@@ -19,6 +19,7 @@ Yields = "d7e99b2f-e7f3-4d9e-9f01-2338fc023ad3"
 [compat]
 LifeContingencies = "2"
 MortalityTables = "2"
+Revise = "3"
 SearchLight = "2"
 SearchLightPostgreSQL = "2"
 ToStruct = "0.2.3"
