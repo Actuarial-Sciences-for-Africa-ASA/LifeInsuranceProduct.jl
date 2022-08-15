@@ -4,8 +4,6 @@ authors = ["Michael Fliegner <Michael.Fliegner@hamburg.de>"]
 version = "0.1.2"
 
 [deps]
-BitemporalPostgres = "e513cd14-23e6-48df-acf1-d9bc8fa5674b"
-GMT = "5752ebe1-31b9-557e-87aa-f909b540aa54"
 LifeContingencies = "c8f0d631-89cd-4a1f-93d0-7542c3692561"
 LifeInsuranceDataModel = "4892898e-25d7-46ce-b5c3-dea2164303ac"
 MortalityTables = "4780e19d-04b9-53dc-86c2-9e9aa59b5a12"
@@ -17,9 +15,6 @@ ToStruct = "43ec2cc1-0e50-5406-a854-b7ff8fdb8dad"
 Yields = "d7e99b2f-e7f3-4d9e-9f01-2338fc023ad3"
 
 [compat]
-BitemporalPostgres = "1"
-GMT = "0.42"
-LifeInsuranceDataModel = "0.2"
 LifeContingencies = "2"
 MortalityTables = "2"
 Revise = "3"
