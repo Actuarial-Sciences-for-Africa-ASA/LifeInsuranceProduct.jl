@@ -2,7 +2,7 @@
 
 julia_version = "1.8.2"
 manifest_format = "2.0"
-project_hash = "26a57213d3c7b5886a68337340c5e9fee98cdfe3"
+project_hash = "8952cbe357a8b80c57687548af7f334d90f0e357"
 
 [[deps.AbstractTrees]]
 git-tree-sha1 = "5c0b629df8a5566a06f5fef5100b53ea56e465a0"
@@ -551,11 +551,9 @@ version = "2.3.0"
 
 [[deps.LifeInsuranceDataModel]]
 deps = ["BitemporalPostgres", "ColorSchemes", "DataFrames", "Dates", "Intervals", "JSON", "LibPQ", "Logging", "Revise", "SearchLight", "SearchLightPostgreSQL", "Test", "TimeZones", "ToStruct"]
-git-tree-sha1 = "60831adab094901afc74cb8d1b75a8b8dab5421f"
-repo-rev = "main"
-repo-url = "https://github.com/Actuarial-Sciences-for-Africa-ASA/LifeInsuranceDataModel.jl"
+git-tree-sha1 = "a7d5a62c338b8fd8256ed4dc09b90bfe91083fe9"
 uuid = "4892898e-25d7-46ce-b5c3-dea2164303ac"
-version = "0.5.1"
+version = "0.5.0"
 
 [[deps.LineSearches]]
 deps = ["LinearAlgebra", "NLSolversBase", "NaNMath", "Parameters", "Printf"]
