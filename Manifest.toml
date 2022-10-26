@@ -1,8 +1,8 @@
 # This file is machine-generated - editing it directly is not advised
 
-julia_version = "1.8.0"
+julia_version = "1.8.2"
 manifest_format = "2.0"
-project_hash = "556dde4f583b6cd3c72b40c1ae7a726a787d315c"
+project_hash = "26a57213d3c7b5886a68337340c5e9fee98cdfe3"
 
 [[deps.AbstractTrees]]
 git-tree-sha1 = "5c0b629df8a5566a06f5fef5100b53ea56e465a0"
@@ -525,9 +525,9 @@ version = "1.14.1"
 
 [[deps.LibPQ_jll]]
 deps = ["Artifacts", "JLLWrappers", "Kerberos_krb5_jll", "Libdl", "OpenSSL_jll", "Pkg"]
-git-tree-sha1 = "91ecfc8b1c4dc529be4531fc69b752361ca81a5e"
+git-tree-sha1 = "a299629703a93d8efcefccfc16b18ad9a073d131"
 uuid = "08be9ffa-1c94-5ee5-a977-46a84ec9b350"
-version = "14.3.0+0"
+version = "14.3.0+1"
 
 [[deps.LibSSH2_jll]]
 deps = ["Artifacts", "Libdl", "MbedTLS_jll"]
@@ -551,9 +551,11 @@ version = "2.3.0"
 
 [[deps.LifeInsuranceDataModel]]
 deps = ["BitemporalPostgres", "ColorSchemes", "DataFrames", "Dates", "Intervals", "JSON", "LibPQ", "Logging", "Revise", "SearchLight", "SearchLightPostgreSQL", "Test", "TimeZones", "ToStruct"]
-git-tree-sha1 = "a7d5a62c338b8fd8256ed4dc09b90bfe91083fe9"
+git-tree-sha1 = "60831adab094901afc74cb8d1b75a8b8dab5421f"
+repo-rev = "main"
+repo-url = "https://github.com/Actuarial-Sciences-for-Africa-ASA/LifeInsuranceDataModel.jl"
 uuid = "4892898e-25d7-46ce-b5c3-dea2164303ac"
-version = "0.5.0"
+version = "0.5.1"
 
 [[deps.LineSearches]]
 deps = ["LinearAlgebra", "NLSolversBase", "NaNMath", "Parameters", "Printf"]
@@ -995,7 +997,7 @@ version = "1.9.0"
 [[deps.Tar]]
 deps = ["ArgTools", "SHA"]
 uuid = "a4e569a6-e804-4fa4-b0f3-eef7a1d5b13e"
-version = "1.10.0"
+version = "1.10.1"
 
 [[deps.TensorCore]]
 deps = ["LinearAlgebra"]
