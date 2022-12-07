@@ -19,7 +19,7 @@ end
 
 function calculate!(ti)
     dob = ti.partner_refs[1].ref.revision.date_of_birth
-    beginn = Date(Dates.year(today()), Dates.month(today()) + 1, 1)
+    beginn = Date(Dates.year(today()), Dates.mod(month(today()) + 1,12), 1)
     """
     issue_age
 

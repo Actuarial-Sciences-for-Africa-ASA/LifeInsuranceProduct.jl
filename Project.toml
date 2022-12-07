@@ -1,7 +1,7 @@
 name = "LifeInsuranceProduct"
 uuid = "492f22fc-54e6-4f0f-bb9b-bacd199f5046"
 authors = ["Michael Fliegner <Michael.Fliegner@hamburg.de>"]
-version = "0.4.2"
+version = "0.4.3"
 
 [deps]
 BitemporalPostgres = "e513cd14-23e6-48df-acf1-d9bc8fa5674b"
@@ -17,7 +17,7 @@ ToStruct = "43ec2cc1-0e50-5406-a854-b7ff8fdb8dad"
 Yields = "d7e99b2f-e7f3-4d9e-9f01-2338fc023ad3"
 
 [compat]
-BitemporalPostgres = "1.5.0"
+BitemporalPostgres = "1.5"
 LifeContingencies = "2"
 MortalityTables = "2"
 Revise = "3"
