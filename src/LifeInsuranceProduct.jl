@@ -9,23 +9,23 @@ export calculate!
 # load mortality rates from MortalityTables.jl
 vbt2001 = MortalityTables.table("2001 VBT Residual Standard Select and Ultimate - Male Nonsmoker, ANB")
 
-function insurance_age(dob, beginn)::Integer
-    if ((Date(Dates.year(beginn), Dates.month(dob), Dates.day(dob)) - beginn).value > 183)
-        Dates.year(beginn) - Dates.year(dob) - 1
+function insurance_age(dob, begindate)::Integer
+    if ((Date(Dates.year(begindate), Dates.month(dob), Dates.day(dob)) - begindate).value > 183)
+        Dates.year(begindate) - Dates.year(dob) - 1
     else
-        Dates.year(beginn) - Dates.year(dob)
+        Dates.year(begindate) - Dates.year(dob)
     end
 end
 
 function calculate!(ti)
     dob = ti.partner_refs[1].ref.revision.date_of_birth
-    beginn = Date(Dates.year(today()), Dates.mod(month(today()) + 1,12), 1)
+    begindate = Date(Dates.year(today()) + (month(today()) == 12 ? 1 : 0), Dates.mod(month(today()) + 1, 12), 1)
     """
     issue_age
 
     Age of insured person as of insurance begin date
     """
-    issue_age = insurance_age(dob, beginn)
+    issue_age = insurance_age(dob, begindate)
 
     life = SingleLife(                 # The life underlying the risk
         mortality=vbt2001.select[issue_age],    # -- Mortality rates
