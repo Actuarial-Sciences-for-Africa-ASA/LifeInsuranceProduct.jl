@@ -560,9 +560,11 @@ version = "2.3.1"
 
 [[deps.LifeInsuranceDataModel]]
 deps = ["BitemporalPostgres", "ColorSchemes", "DataFrames", "DataStructures", "Dates", "Intervals", "JSON", "LibPQ", "Logging", "Revise", "SearchLight", "SearchLightPostgreSQL", "Test", "TimeZones", "ToStruct"]
-git-tree-sha1 = "0eee9778b10171d000402e1553587ac4db338e8e"
+git-tree-sha1 = "8c357d28267c80a92babaac5e62a2aab79b49c4f"
+repo-rev = "main"
+repo-url = "https://github.com/Actuarial-Sciences-for-Africa-ASA/LifeInsuranceDataModel.jl"
 uuid = "4892898e-25d7-46ce-b5c3-dea2164303ac"
-version = "0.7.0"
+version = "1.0.0"
 
 [[deps.LineSearches]]
 deps = ["LinearAlgebra", "NLSolversBase", "NaNMath", "Parameters", "Printf"]
