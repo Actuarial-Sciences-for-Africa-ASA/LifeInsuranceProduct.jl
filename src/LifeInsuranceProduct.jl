@@ -85,14 +85,6 @@ function calculate(ti, params::Dict{String,Any})
     premium_net(lc)
 
     ai = AnnuityImmediate(lc)
-    if (ti.tariff_ref.rev.deferment == 0.0)
-        ti.tariff_ref.rev.annuity_due = 0.0
-        ti.tariff_ref.rev.annuity_immediate = present_value(AnnuityImmediate(lc))
-    else
-        ti.tariff_ref.rev.annuity_immediate = 0.0
-        ti.tariff_ref.rev.annuity_due = present_value(AnnuityDue(lc, start_time=ti.tariff_ref.rev.deferment))
-    end
-    ti
 end
 
 end # module
