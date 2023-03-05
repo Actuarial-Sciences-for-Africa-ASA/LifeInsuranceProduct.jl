@@ -4,8 +4,51 @@ using Dates, LifeContingencies
 using MortalityTables
 using Yields
 import LifeContingencies: V, ä     # pull the shortform notation into scope
-export calculate!
+export calculate, get_tariff_interface
 
+function get_tariff_interface(::Val{1})
+    """
+      {"calculation_target":
+        {"selected": "none",
+        "label": "calculation target",
+        "options": ["premium","sum insured"],
+        "sum insured": 
+        {"p":{"type":"Int", "default":0, "value":null},
+        "n":{"type":"Int", "default":0, "value":null},
+        "m":{"type":"Int", "default":0, "value":null},
+        "begin":{"type":"Date", "default":"2020-01-01", "value":null}
+        },
+        "premium": 
+        {"n":{"type":"Int", "default":0, "value":null},
+        "m":{"type":"Int", "default":0, "value":null},
+        "C":{"type":"Int", "default":0, "value":null},
+        "begin":{"type":"Date", "default":"2020-01-01", "value":null}
+        }
+      }, "result": {"value": 0}
+      }
+    """
+end
+
+function get_tariff_interface(::Val{2})
+    """
+      {"calculation_target":
+        {"selected": "none",
+        "label": "calculation target",
+        "options": ["premium","sum insured"],
+        "sum insured": 
+        {"p":{"type":"Int", "default":0, "value":null},
+        "n":{"type":"Int", "default":0, "value":null},
+        "begin":{"type":"Date", "default":"2020-01-01", "value":null}
+        },
+        "premium": 
+        {"n":{"type":"Int", "default":0, "value":null},
+        "C":{"type":"Int", "default":0, "value":null},
+        "begin":{"type":"Date", "default":"2020-01-01", "value":null}
+        }
+      }, "result": {"value": 0}
+      }
+    """
+end
 # load mortality rates from MortalityTables.jl
 vbt2001 = MortalityTables.table("2001 VBT Residual Standard Select and Ultimate - Male Nonsmoker, ANB")
 
@@ -17,7 +60,7 @@ function insurance_age(dob, begindate)::Integer
     end
 end
 
-function calculate!(ti)
+function calculate(ti, params::Dict{String,Any})
     dob = ti.partner_refs[1].ref.revision.date_of_birth
     begindate = Date(Dates.year(today()) + (month(today()) == 12 ? 1 : 0), Dates.mod(month(today()) + 1, 12), 1)
     """
