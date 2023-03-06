@@ -1,6 +1,6 @@
 module LifeInsuranceProduct
 
-using JSON, Dates, LifeContingencies
+using LifeInsuranceDataModel, JSON, Dates, LifeContingencies
 using MortalityTables
 using Yields
 import LifeContingencies: V, ä     # pull the shortform notation into scope
@@ -85,7 +85,7 @@ function insurance_age(dob, begindate)::Integer
   end
 end
 
-function calculate!(ti, params::Dict{String,Any})
+function calculate!(ti::TariffItemSection, params::Dict{String,Any})
   dob = ti.partner_refs[1].ref.revision.date_of_birth
   fn = params["calculation_target"]["selected"]
   args = params["calculation_target"][fn]
