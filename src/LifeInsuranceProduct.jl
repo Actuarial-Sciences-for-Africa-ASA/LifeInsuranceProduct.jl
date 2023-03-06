@@ -31,10 +31,10 @@ function get_tariff_interface(::Val{1})
         "begin":{"type":"Date", "default":"2020-01-01", "value":null}
         },
         "ä": 
-        {"n":{"type":"Int", "default":0, "value":5},
-        "m":{"type":"Int", "default":0, "value":5},
-        "frequency":{"type":"Int", "default":0, "value":4},
-        "begin":{"type":"Date", "default":"2020-01-01", "value":"2020-01-01"}
+        {"n":{"type":"Int", "default":0, "value":null},
+        "m":{"type":"Int", "default":0, "value":null},
+        "frequency":{"type":"Int", "default":0, "value":null},
+        "begin":{"type":"Date", "default":"2020-01-01", "value":null}
         }
       }, "result": {"value": 0}
       }
@@ -62,10 +62,10 @@ function get_tariff_interface(::Val{2})
         "begin":{"type":"Date", "default":"2020-01-01", "value":null}
         },
         "ä": 
-        {"n":{"type":"Int", "default":0, "value":5},
-        "m":{"type":"Int", "default":0, "value":5},
-        "frequency":{"type":"Int", "default":0, "value":4},
-        "begin":{"type":"Date", "default":"2020-01-01", "value":"2020-01-01"}
+        {"n":{"type":"Int", "default":0, "value":null},
+        "m":{"type":"Int", "default":0, "value":null},
+        "frequency":{"type":"Int", "default":0, "value":null},
+        "begin":{"type":"Date", "default":"2020-01-01", "value":null}
         }
       }, "result": {"value": 0}
       }
@@ -92,9 +92,9 @@ function calculate!(ti::TariffItemSection, params::Dict{String,Any})
   if fn == "ä"
 
     begindate = Date(args["begin"]["value"])
-    n = args["n"]["value"]
-    m = args["m"]["value"]
-    frq = args["frequency"]["value"]
+    n = parse(Int, args["n"]["value"])
+    m = parse(Int, args["m"]["value"])
+    frq = parse(Int, args["frequency"]["value"])
 
     """
     issue_age
