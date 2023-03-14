@@ -21,7 +21,7 @@ function get_tariff_interface(::Val{0})
        }, "result": {"value": 0}
        }
      """
-  TariffInterface(JSON.parse(calls), nothing)
+  TariffInterface(JSON.parse(calls), calculate!)
 end
 
 function get_tariff_interface(::Val{1})
