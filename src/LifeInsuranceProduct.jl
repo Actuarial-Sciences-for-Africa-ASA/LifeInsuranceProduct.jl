@@ -12,6 +12,18 @@ mutable struct TariffInterface
 end
 
 
+function get_tariff_interface(::Val{0})
+  calls = """
+       {"calculation_target":
+         {"selected": "none",
+         "options": []
+       
+       }, "result": {"value": 0}
+       }
+     """
+  TariffInterface(JSON.parse(calls), nothing)
+end
+
 function get_tariff_interface(::Val{1})
   calls = """
       {"calculation_target":
