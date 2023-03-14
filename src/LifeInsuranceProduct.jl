@@ -4,7 +4,7 @@ using LifeInsuranceDataModel, JSON, Dates, LifeContingencies
 using MortalityTables
 using Yields
 import LifeContingencies: V, ä     # pull the shortform notation into scope
-export calculate, get_tariff_interface
+export calculate!, get_tariff_interface, TariffInterface
 
 mutable struct TariffInterface
   description::String
@@ -20,15 +20,18 @@ end
 dummy used to init calculator interface gui
 """
 function get_tariff_interface(::Val{0})
-  calls = """
+  calls = JSON.parse("""
        {"calculation_target":
          {"selected": "none",
          "options": []
        
        }, "result": {"value": 0}
        }
-     """
-  TariffInterface(JSON.parse(calls), calculate!)
+     """)
+  attributes = JSON.parse("{}")
+  tariffitem_attributes = JSON.parse("{}")
+  TariffInterface("",
+    calls, calculate!, attributes, tariffitem_attributes, [1], "")
 end
 
 """
