@@ -7,11 +7,18 @@ import LifeContingencies: V, ä     # pull the shortform notation into scope
 export calculate, get_tariff_interface
 
 mutable struct TariffInterface
+  description::String
   calls::Dict{String,Any}
   calculator::Function
+  parameters::Dict{String,Any}
+  contract_attributes::Dict{String,Any}
+  partnerroles::Vector{Int}
+  mortality_table::String
 end
 
-
+"""
+dummy used to init calculator interface gui
+"""
 function get_tariff_interface(::Val{0})
   calls = """
        {"calculation_target":
@@ -24,67 +31,127 @@ function get_tariff_interface(::Val{0})
   TariffInterface(JSON.parse(calls), calculate!)
 end
 
+"""
+
+TerminalIllnessTariff = create_tariff(
+  "Terminal Illness", 2,
+  "2001 VBT Residual Standard Select and Ultimate - Male Nonsmoker, ANB", tariffparameters
+)
+OccupationalDisabilityTariff = create_tariff(
+  "Occupational Disability", 2,
+  "2001 VBT Residual Standard Select and Ultimate - Male Nonsmoker, ANB", tariffparameters
+)
+ProfitParticipationTariff = create_tariff(
+  "Profit participation", 2,
+  "2001 VBT Residual Standard Select and Ultimate - Male Nonsmoker, ANB", tariffparameters
+)
+LifeRiskTariff2 = create_tariff(
+  "Two Life Risk Insurance", 2,
+  "2001 VBT Residual Standard Select and Ultimate - Male Nonsmoker, ANB", tariffparameters, [1, 2])
+
+"""
+
+"""
+  get_tariff_interface(::Val{1})
+  Life Risk Insurance
+"""
 function get_tariff_interface(::Val{1})
-  calls = """
-      {"calculation_target":
-        {"selected": "none",
-        "label": "calculation target",
-        "options": ["premium","sum insured","ä"],
-        "sum insured": 
-        {"p":{"type":"Int", "default":0, "value":null},
-        "n":{"type":"Int", "default":0, "value":null},
-        "m":{"type":"Int", "default":0, "value":null},
-        "begin":{"type":"Date", "default":"2020-01-01", "value":null}
-        },
-        "premium": 
-        {"n":{"type":"Int", "default":0, "value":null},
-        "m":{"type":"Int", "default":0, "value":null},
-        "C":{"type":"Int", "default":0, "value":null},
-        "begin":{"type":"Date", "default":"2020-01-01", "value":null}
-        },
-        "ä": 
-        {"n":{"type":"Int", "default":0, "value":null},
-        "m":{"type":"Int", "default":0, "value":null},
-        "frequency":{"type":"Int", "default":0, "value":null},
-        "begin":{"type":"Date", "default":"2020-01-01", "value":null}
+  let
+    calls = JSON.parse("""
+        {"calculation_target":
+          {"selected": "none",
+          "label": "calculation target",
+          "options": ["premium","sum insured","ä"],
+          "sum insured": 
+          {"p":{"type":"Int", "default":0, "value":null},
+          "n":{"type":"Int", "default":0, "value":null},
+          "m":{"type":"Int", "default":0, "value":null},
+          "begin":{"type":"Date", "default":"2020-01-01", "value":null}
+          },
+          "premium": 
+          {"n":{"type":"Int", "default":0, "value":null},
+          "m":{"type":"Int", "default":0, "value":null},
+          "C":{"type":"Int", "default":0, "value":null},
+          "begin":{"type":"Date", "default":"2020-01-01", "value":null}
+          },
+          "ä": 
+          {"n":{"type":"Int", "default":0, "value":null},
+          "m":{"type":"Int", "default":0, "value":null},
+          "frequency":{"type":"Int", "default":0, "value":null},
+          "begin":{"type":"Date", "default":"2020-01-01", "value":null}
+          }
+        }, "result": {"value": 0}
         }
-      }, "result": {"value": 0}
-      }
-    """
-  TariffInterface(JSON.parse(calls), calculate!)
+      """)
+    attributes = JSON.parse("{}")
+    tariffitem_attributes = JSON.parse("{}")
+    TariffInterface("Life Risk Insurance",
+      calls, calculate!, attributes, tariffitem_attributes, [1], "1980 CET - Male Nonsmoker, ANB")
+  end
 end
 
-
+"""
+  get_tariff_interface(::Val{2})
+  Terminal Illness
+"""
 function get_tariff_interface(::Val{2})
-  calls = """
-      {"calculation_target":
-        {"selected": "none",
-        "label": "calculation target",
-        "options": ["premium","sum insured","ä"],
-        "sum insured": 
-        {"p":{"type":"Int", "default":0, "value":null},
-        "n":{"type":"Int", "default":0, "value":null},
-        "m":{"type":"Int", "default":0, "value":null},
-        "begin":{"type":"Date", "default":"2020-01-01", "value":null}
-        },
-        "premium": 
-        {"n":{"type":"Int", "default":0, "value":null},
-        "m":{"type":"Int", "default":0, "value":null},
-        "C":{"type":"Int", "default":0, "value":null},
-        "begin":{"type":"Date", "default":"2020-01-01", "value":null}
-        },
-        "ä": 
-        {"n":{"type":"Int", "default":0, "value":null},
-        "m":{"type":"Int", "default":0, "value":null},
-        "frequency":{"type":"Int", "default":0, "value":null},
-        "begin":{"type":"Date", "default":"2020-01-01", "value":null}
-        }
-      }, "result": {"value": 0}
-      }
-    """
-  TariffInterface(JSON.parse(calls), calculate!)
+  let
+    calls = JSON.parse("""
+       {"calculation_target":
+         {"selected": "none",
+         "options": []
+       
+       }, "result": {"value": 0}
+       }
+      """)
+    attributes = JSON.parse("{}")
+    tariffitem_attributes = JSON.parse("{}")
+    TariffInterface("Terminal Illness",
+      calls, calculate!, attributes, tariffitem_attributes, [1], "2001 VBT Residual Standard Select and Ultimate - Male Nonsmoker, ANB")
+  end
 end
 
+"""
+  get_tariff_interface(::Val{3})
+  Profit Participation
+"""
+function get_tariff_interface(::Val{3})
+  let
+    calls = JSON.parse("""
+       {"calculation_target":
+         {"selected": "none",
+         "options": []
+       
+       }, "result": {"value": 0}
+       }
+      """)
+    attributes = JSON.parse("{}")
+    tariffitem_attributes = JSON.parse("{}")
+    TariffInterface("Profit Participation",
+      calls, calculate!, attributes, tariffitem_attributes, [1], "2001 VBT Residual Standard Select and Ultimate - Male Nonsmoker, ANB")
+  end
+end
+
+"""
+  get_tariff_interface(::Val{4})
+  Two Life Risk
+"""
+function get_tariff_interface(::Val{4})
+  let
+    calls = JSON.parse("""
+       {"calculation_target":
+         {"selected": "none",
+         "options": []
+       
+       }, "result": {"value": 0}
+       }
+      """)
+    attributes = JSON.parse("{}")
+    tariffitem_attributes = JSON.parse("{}")
+    TariffInterface("Two Life Risk",
+      calls, calculate!, attributes, tariffitem_attributes, [1, 2], "2001 VBT Residual Standard Select and Ultimate - Male Nonsmoker, ANB")
+  end
+end
 
 # load mortality rates from MortalityTables.jl
 vbt2001 = MortalityTables.table("2001 VBT Residual Standard Select and Ultimate - Male Nonsmoker, ANB")
