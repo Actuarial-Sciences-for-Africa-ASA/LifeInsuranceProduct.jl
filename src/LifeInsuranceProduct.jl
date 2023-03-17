@@ -100,12 +100,30 @@ end
 function get_tariff_interface(::Val{2})
   let
     calls = JSON.parse("""
-       {"calculation_target":
-         {"selected": "none",
-         "options": []
-       
-       }, "result": {"value": 0}
-       }
+ {"calculation_target":
+          {"selected": "none",
+          "label": "calculation target",
+          "options": ["premium","sum insured","ä"],
+          "sum insured": 
+          {"p":{"type":"Int", "default":0, "value":null},
+          "n":{"type":"Int", "default":0, "value":null},
+          "m":{"type":"Int", "default":0, "value":null},
+          "begin":{"type":"Date", "default":"2020-01-01", "value":null}
+          },
+          "premium": 
+          {"n":{"type":"Int", "default":0, "value":null},
+          "m":{"type":"Int", "default":0, "value":null},
+          "C":{"type":"Int", "default":0, "value":null},
+          "begin":{"type":"Date", "default":"2020-01-01", "value":null}
+          },
+          "ä": 
+          {"n":{"type":"Int", "default":0, "value":null},
+          "m":{"type":"Int", "default":0, "value":null},
+          "frequency":{"type":"Int", "default":0, "value":null},
+          "begin":{"type":"Date", "default":"2020-01-01", "value":null}
+          }
+        }, "result": {"value": 0}
+        }
       """)
     attributes = JSON.parse("{}")
     tariffitem_attributes = JSON.parse("{}")
