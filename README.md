@@ -2,10 +2,16 @@
 
 ![Beware, Work In Progress](docs/src/assets/wip.png)
 
-This project is just empty scaffolding by now.
+This project is by now just a pilot to investigate possible interface designs for
+LifeInsuranceProducts that should be pluggable into [our project LifeInsuranceContracts](https://github.com/Actuarial-Sciences-for-Africa-ASA/LifeInsuranceContracts.jl) 
 
-It is, however, intended to provide a tariff calculator API for [our project LifeInsuranceDataModel](https://github.com/Actuarial-Sciences-for-Africa-ASA/LifeInsuranceDataModel.jl)
 
-# Architectecture
-
-Dynamic data structures are used for parameter transfer and persistence
+It provides a very simple calculator API example providing 
+- functions leveraging [the LifeContingencies library](https://github.com/JuliaActuary/LifeContingencies.jl)
+comprising computation of
+    - present value and 
+    - net premium with varying payment frequencies where applicable for
+    - annuity, lifelong and temporary
+    - Life Risk 
+    - Two Life Risk
+- as well as function meta data in JSON format [usable for calling these functions from HTML forms in a life insurance web app](https://github.com/Actuarial-Sciences-for-Africa-ASA/GenieBuiltLifeProto)
