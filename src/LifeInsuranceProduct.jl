@@ -107,6 +107,8 @@ end
 
 function calculate!(ti::TariffItemSection, params::Dict{String,Any})
   dob = ti.partner_refs[1].ref.revision.date_of_birth
+  life = SingleLife(
+    mortality=MortalityTables.table(mts[sex][smoker]).select[issue_age])
   fn = params["calculation_target"]["selected"]
   args = params["calculation_target"][fn]
   if fn == "ä"
@@ -122,10 +124,6 @@ function calculate!(ti::TariffItemSection, params::Dict{String,Any})
     Age of insured person as of insurance begin date
     """
     issue_age = insurance_age(dob, begindate)
-
-    life = SingleLife(                 # The life underlying the risk
-      mortality=vbt2001.select[issue_age],    # -- Mortality rates
-    )
 
     yield = Yields.Constant(0.0125)      # Using a flat 1,25% interest rate
 
