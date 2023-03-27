@@ -65,7 +65,7 @@ function get_tariff_interface(::Val{1})
         {"calculation_target":
           {"selected": "none",
           "label": "calculation target",
-          "options": ["net premium","A"],
+          "options": ["net premium","ä"],
          "net premium": 
           {"n":{"type":"Int", "default":0, "value":null},
           "begin":{"type":"Date", "default":"2020-01-01", "value":null}
