@@ -69,7 +69,7 @@ function get_tariff_interface(::Val{1})
          "net premium": 
           {"n":{"type":"Int", "default":0, "value":null},
           "begin":{"type":"Date", "default":"2020-01-01", "value":null}
-          },
+          }, 
           "ä": 
           {"n":{"type":"Int", "default":0, "value":null},
           "m":{"type":"Int", "default":0, "value":null},
