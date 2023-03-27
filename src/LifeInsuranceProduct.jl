@@ -66,9 +66,7 @@ function get_tariff_interface(::Val{1})
           {"selected": "none",
           "label": "calculation target",
           "options": ["net premium","A"],
-          "sex": {"type":"enum", "options": ["female","male"],"selected": "none"},
-          "smoker": {"type":"enum", "options": ["smoker","nonsmoker"],"selected": "none"},
-          "net premium": 
+         "net premium": 
           {"n":{"type":"Int", "default":0, "value":null},
           "begin":{"type":"Date", "default":"2020-01-01", "value":null}
           },
