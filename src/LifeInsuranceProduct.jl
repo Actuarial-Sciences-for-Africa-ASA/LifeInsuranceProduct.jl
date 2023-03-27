@@ -106,36 +106,42 @@ function insurance_age(dob, begindate)::Integer
 end
 
 function calculate!(ti::TariffItemSection, params::Dict{String,Any})
-  dob = ti.partner_refs[1].ref.revision.date_of_birth
-  life = SingleLife(
-    mortality=MortalityTables.table(mts[sex][smoker]).select[issue_age])
-  fn = params["calculation_target"]["selected"]
-  args = params["calculation_target"][fn]
-  if fn == "ä"
+  try
 
-    begindate = Date(args["begin"]["value"])
-    n = parse(Int, args["n"]["value"])
-    m = parse(Int, args["m"]["value"])
-    frq = parse(Int, args["frequency"]["value"])
+    dob = ti.partner_refs[1].ref.revision.date_of_birth
+    life = SingleLife(
+      mortality=MortalityTables.table(mts[sex][smoker]).select[issue_age])
+    fn = params["calculation_target"]["selected"]
+    args = params["calculation_target"][fn]
+    if fn == "ä"
 
-    """
-    issue_age
+      begindate = Date(args["begin"]["value"])
+      n = parse(Int, args["n"]["value"])
+      m = parse(Int, args["m"]["value"])
+      frq = parse(Int, args["frequency"]["value"])
 
-    Age of insured person as of insurance begin date
-    """
-    issue_age = insurance_age(dob, begindate)
+      """
+      issue_age
 
-    yield = Yields.Constant(0.0125)      # Using a flat 1,25% interest rate
+      Age of insured person as of insurance begin date
+      """
+      issue_age = insurance_age(dob, begindate)
 
-    lc = LifeContingency(life, yield)  # LifeContingency joins the risk with interest
+      yield = Yields.Constant(0.0125)      # Using a flat 1,25% interest rate
+
+      lc = LifeContingency(life, yield)  # LifeContingency joins the risk with interest
 
 
-    ins = Insurance(lc)                # Whole Life insurance
-    ins = Insurance(life, yield)       # alternate way to construct
+      ins = Insurance(lc)                # Whole Life insurance
+      ins = Insurance(life, yield)       # alternate way to construct
 
-    premium_net(lc)
+      premium_net(lc)
 
-    params["result"]["value"] = ä(lc, n, certain=m, frequency=frq)
+      params["result"]["value"] = ä(lc, n, start_time=m, frequency=frq)
+    end
+  catch err
+    println("wassis shief gegangen ")
+    @error "ERROR: " exception = (err, catch_backtrace())
   end
 end
 
