@@ -44,7 +44,7 @@ function get_tariff_interface(::Val{0})
   attributes = JSON.parse("{}")
   tariffitem_attributes = JSON.parse("{}")
   TariffInterface("",
-    calls, calculate!, attributes, tariffitem_attributes, [1], "")
+    calls, calculate!, attributes, tariffitem_attributes, [])
 end
 
 """
