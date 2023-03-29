@@ -94,8 +94,29 @@ function get_tariff_interface(::Val{1})
   end
 end
 
-# load mortality rates from MortalityTables.jl
-vbt2001 = MortalityTables.table("2001 VBT Residual Standard Select and Ultimate - Male Nonsmoker, ANB")
+"""
+  get_tariff_interface(::Val{2})
+  Profit participation 
+"""
+function get_tariff_interface(::Val{2})
+  let
+    calls = JSON.parse("""
+        {"result": {"value": 0}}
+      """)
+    attributes = JSON.parse("""{"mortality_tables":
+        { "f": {"nonsmoker": "1986-92 CIA – Female Nonsmoker, ANB",
+              "smoker": "1986-92 CIA – Female Smoker, ANB" },
+        "m":{"nonsmoker": "1986-92 CIA – Male Nonsmoker, ANB",
+            "smoker": "1986-92 CIA – Male Smoker, ANB"}
+        }
+      }
+      """)
+    tariffitem_attributes = JSON.parse("""{}""")
+    partnerroles = [1]
+    TariffInterface("Profit participation",
+      calls, calculate!, attributes, tariffitem_attributes, partnerroles)
+  end
+end
 
 function insurance_age(dob, begindate)::Integer
   if ((Date(Dates.year(begindate), Dates.month(dob), Dates.day(dob)) - begindate).value > 183)
@@ -149,6 +170,10 @@ function calculate!(interface_id::Val{1}, ti::TariffItemSection, params::Dict{St
     println("wassis shief gegangen ")
     @error "ERROR: " exception = (err, catch_backtrace())
   end
+end
+
+function calculate!(interface_id::Val{2}, ti::TariffItemSection, params::Dict{String,Any})
+  params["result"]["value"] = ""
 end
 
 end # module
