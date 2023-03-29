@@ -105,12 +105,20 @@ function insurance_age(dob, begindate)::Integer
   end
 end
 
-function calculate!(ti::TariffItemSection, params::Dict{String,Any})
+function calculate!(interface_id::Val{1}, ti::TariffItemSection, params::Dict{String,Any})
   try
 
-    dob = ti.partner_refs[1].ref.revision.date_of_birth
-    life = SingleLife(
-      mortality=MortalityTables.table(mts[sex][smoker]).select[issue_age])
+    # accessiong partner data
+    pr = ti.partner_refs[1].ref.revision
+    dob = pr.date_of_birth
+    sex = pr.sex
+    smoker = pr.smoker
+
+    #accessing tariff data
+    i = ti.tariff_ref.ref.revision.interest_rate
+
+
+
     fn = params["calculation_target"]["selected"]
     args = params["calculation_target"][fn]
     if fn == "ä"
@@ -119,15 +127,13 @@ function calculate!(ti::TariffItemSection, params::Dict{String,Any})
       n = parse(Int, args["n"]["value"])
       m = parse(Int, args["m"]["value"])
       frq = parse(Int, args["frequency"]["value"])
-
-      """
-      issue_age
-
-      Age of insured person as of insurance begin date
-      """
       issue_age = insurance_age(dob, begindate)
 
-      yield = Yields.Constant(0.0125)      # Using a flat 1,25% interest rate
+      mts = get_tariff_interface(interface_id).parameters["mortality_tables"]
+      life = SingleLife(
+        mortality=MortalityTables.table(mts[sex][smoker ? "smoker" : "nonsmoker"]).select[issue_age])
+
+      yield = Yields.Constant(i)      # Using a flat 1,25% interest rate
 
       lc = LifeContingency(life, yield)  # LifeContingency joins the risk with interest
 
