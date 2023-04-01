@@ -1,179 +1,79 @@
 module LifeInsuranceProduct
 
-using LifeInsuranceDataModel, JSON, Dates, LifeContingencies
-using MortalityTables
-using Yields
-import LifeContingencies: V, ä     # pull the shortform notation into scope
-export calculate!, get_tariff_interface, TariffInterface
+using LifeInsuranceDataModel
+include("TariffUtilities.jl")
+using .TariffUtilities
+include("ProfitParticipationTariff.jl")
+using .ProfitParticipationTariff
+include("PensionTariff.jl")
+using .PensionTariff
+include("SingleLifeRiskTariff.jl")
+using .SingleLifeRiskTariff
+include("JointLifeRiskTariff.jl")
+using .JointLifeRiskTariff
+export TariffInterface, get_tariff_interface, calculate!
 
 """
-mutable struct TariffInterface
-  calls: signatures of functions in JSON format usable in HTML-code
-  calculator: function name of the calculator implementing those calls
-  contract_attributes: definition of persistent attributes - in JSON format - of tariffitems,
-    which are not part of the data base model
-  parameters: definition of persistent attributes - in JSON format - of tariffs,
-    which are not part of the data base model
-  partnerroles: roles of partner relations from tariffitems
-  mortality_table: id
-
-  
+  TariffUtilities.get_tariff_interface(::Val{1})
+  ProfitParticipationTariff 
+"""
+function TariffUtilities.get_tariff_interface(::Val{1})
+  ProfitParticipationTariff.get_tariff_interface()
+end
+"""
+  TariffUtilities.calculate!(interface_id::Val{1}, ti::TariffItemSection, params::Dict{String,Any})
+  ProfitParticipationTariff 
 """
 
-mutable struct TariffInterface
-  description::String
-  calls::Dict{String,Any}
-  calculator::Function
-  parameters::Dict{String,Any}
-  contract_attributes::Dict{String,Any}
-  partnerroles::Vector{Int}
+function TariffUtilities.calculate!(interface_id::Val{1}, ti::TariffItemSection, params::Dict{String,Any})
+  ProfitParticipationTariff.calculate!(1, ti, params)
+end
+
+
+"""
+  TariffUtilities.get_tariff_interface(::Val{2})
+  PensionTariff 
+"""
+function TariffUtilities.get_tariff_interface(::Val{2})
+  PensionTariff.get_tariff_interface()
+end
+"""
+  TariffUtilities.calculate!(interface_id::Val{2}, ti::TariffItemSection, params::Dict{String,Any})
+  PensionTariff 
+"""
+function TariffUtilities.calculate!(interface_id::Val{2}, ti::TariffItemSection, params::Dict{String,Any})
+  PensionTariff.calculate!(2, ti, params)
 end
 
 """
-dummy used to init calculator interface gui
+  TariffUtilities.get_tariff_interface(::Val{3})
+  SingleLifeRisk 
 """
-function get_tariff_interface(::Val{0})
-  calls = JSON.parse("""
-       {"calculation_target":
-         {"selected": "none",
-         "options": []
-       
-       }, "result": {"value": 0}
-       }
-     """)
-  attributes = JSON.parse("{}")
-  tariffitem_attributes = JSON.parse("{}")
-  TariffInterface("",
-    calls, calculate!, attributes, tariffitem_attributes, [])
+function TariffUtilities.get_tariff_interface(::Val{3})
+  SingleLifeRiskTariff.get_tariff_interface()
 end
 
 """
-"1986-92 CIA – Female Nonsmoker, ANB"
-"1986-92 CIA – Female Smoker, ANB"
-"1986-92 CIA – Male Nonsmoker, ANB"
-"1986-92 CIA – Male Smoker, ANB"
-
+  TariffUtilities.calculate!(interface_id::Val{3}, ti::TariffItemSection, params::Dict{String,Any})
+  SingleLifeRisk 
 """
-
-"""
-  get_tariff_interface(::Val{1})
-  Life Risk Insurance 
-"""
-function get_tariff_interface(::Val{1})
-  let
-    calls = JSON.parse("""
-        {"calculation_target":
-          {"selected": "none",
-          "label": "calculation target",
-          "options": ["net premium","ä"],
-         "net premium": 
-          {"n":{"type":"Int", "default":0, "value":null},
-          "begin":{"type":"Date", "default":"2020-01-01", "value":null}
-          }, 
-          "ä": 
-          {"n":{"type":"Int", "default":0, "value":null},
-          "m":{"type":"Int", "default":0, "value":null},
-          "frequency":{"type":"Int", "default":0, "value":null},
-          "begin":{"type":"Date", "default":"2020-01-01", "value":null}
-          }
-        }, "result": {"value": 0}
-        }
-      """)
-    attributes = JSON.parse("""{"mortality_tables":
-        { "f": {"nonsmoker": "1986-92 CIA – Female Nonsmoker, ANB",
-              "smoker": "1986-92 CIA – Female Smoker, ANB" },
-        "m":{"nonsmoker": "1986-92 CIA – Male Nonsmoker, ANB",
-            "smoker": "1986-92 CIA – Male Smoker, ANB"}
-        }
-      }
-      """)
-    tariffitem_attributes = JSON.parse("{}")
-    partnerroles = [1]
-    TariffInterface("Life Risk Insurance",
-      calls, calculate!, attributes, tariffitem_attributes, partnerroles)
-  end
+function TariffUtilities.calculate!(interface_id::Val{3}, ti::TariffItemSection, params::Dict{String,Any})
+  SingleLifeRiskTariff.calculate!(3, ti, params)
 end
 
 """
-  get_tariff_interface(::Val{2})
-  Profit participation 
+  TariffUtilities.get_tariff_interface(::Val{4})
+  JointLifeRiskTariff 
 """
-function get_tariff_interface(::Val{2})
-  let
-    calls = JSON.parse("""
-        {"result": {"value": 0}}
-      """)
-    attributes = JSON.parse("""{"mortality_tables":
-        { "f": {"nonsmoker": "1986-92 CIA – Female Nonsmoker, ANB",
-              "smoker": "1986-92 CIA – Female Smoker, ANB" },
-        "m":{"nonsmoker": "1986-92 CIA – Male Nonsmoker, ANB",
-            "smoker": "1986-92 CIA – Male Smoker, ANB"}
-        }
-      }
-      """)
-    tariffitem_attributes = JSON.parse("""{}""")
-    partnerroles = [1]
-    TariffInterface("Profit participation",
-      calls, calculate!, attributes, tariffitem_attributes, partnerroles)
-  end
+function TariffUtilities.get_tariff_interface(::Val{4})
+  JointLifeRiskTariff.get_tariff_interface()
 end
 
-function insurance_age(dob, begindate)::Integer
-  if ((Date(Dates.year(begindate), Dates.month(dob), Dates.day(dob)) - begindate).value > 183)
-    Dates.year(begindate) - Dates.year(dob) - 1
-  else
-    Dates.year(begindate) - Dates.year(dob)
-  end
+"""
+  TariffUtilities.calculate!(interface_id::Val{4}, ti::TariffItemSection, params::Dict{String,Any})
+  JointLifeRisk 
+"""
+function TariffUtilities.calculate!(interface_id::Val{4}, ti::TariffItemSection, params::Dict{String,Any})
+  JointLifeRiskTariff.calculate!(4, ti, params)
 end
-
-function calculate!(interface_id::Val{1}, ti::TariffItemSection, params::Dict{String,Any})
-  try
-
-    # accessiong partner data
-    pr = ti.partner_refs[1].ref.revision
-    dob = pr.date_of_birth
-    sex = pr.sex
-    smoker = pr.smoker
-
-    #accessing tariff data
-    i = ti.tariff_ref.ref.revision.interest_rate
-
-
-
-    fn = params["calculation_target"]["selected"]
-    args = params["calculation_target"][fn]
-    if fn == "ä"
-
-      begindate = Date(args["begin"]["value"])
-      n = parse(Int, args["n"]["value"])
-      m = parse(Int, args["m"]["value"])
-      frq = parse(Int, args["frequency"]["value"])
-      issue_age = insurance_age(dob, begindate)
-
-      mts = get_tariff_interface(interface_id).parameters["mortality_tables"]
-      life = SingleLife(
-        mortality=MortalityTables.table(mts[sex][smoker ? "smoker" : "nonsmoker"]).select[issue_age])
-
-      yield = Yields.Constant(i)      # Using a flat 1,25% interest rate
-
-      lc = LifeContingency(life, yield)  # LifeContingency joins the risk with interest
-
-
-      ins = Insurance(lc)                # Whole Life insurance
-      ins = Insurance(life, yield)       # alternate way to construct
-
-      premium_net(lc)
-
-      params["result"]["value"] = ä(lc, n, start_time=m, frequency=frq)
-    end
-  catch err
-    println("wassis shief gegangen ")
-    @error "ERROR: " exception = (err, catch_backtrace())
-  end
-end
-
-function calculate!(interface_id::Val{2}, ti::TariffItemSection, params::Dict{String,Any})
-  params["result"]["value"] = ""
-end
-
 end # module

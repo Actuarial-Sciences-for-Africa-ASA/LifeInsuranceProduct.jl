@@ -15,3 +15,9 @@ comprising computation of
     - Life Risk 
     - Two Life Risk
 - as well as function meta data in JSON format [usable for calling these functions from HTML forms in a life insurance web app](https://github.com/Actuarial-Sciences-for-Africa-ASA/GenieBuiltLifeProto)
+
+[LifeInsuranceProduct](src/LifeInsuranceProduct.jl) bundles and dispatches calls for tariff metadata and computations as of now to
+    - [SingleLifeRiskTariff](src/SingleLifeRiskTariff.jl)
+    - [JointLifeRiskTariff](src/JointLifeRiskTariff.jl)
+    - [PensionTariff](src/PensionTariff.jl)
+    - [ProfitParticipationTariff](src/ProfitParticipationTariff.jl)
