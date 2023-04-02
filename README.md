@@ -21,3 +21,5 @@ comprising computation of
     - [JointLifeRiskTariff](src/JointLifeRiskTariff.jl)
     - [PensionTariff](src/PensionTariff.jl)
     - [ProfitParticipationTariff](src/ProfitParticipationTariff.jl)
+
+To explore usage of this package use this [notebook](testAPI.ipynb)

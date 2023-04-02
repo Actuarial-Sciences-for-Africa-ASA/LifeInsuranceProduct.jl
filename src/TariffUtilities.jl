@@ -1,19 +1,9 @@
 module TariffUtilities
-using JSON, LifeInsuranceDataModel
+using Dates, JSON, LifeInsuranceDataModel
 export TariffInterface, insurance_age, get_tariff_interface, calculate!
 
 """
 mutable struct TariffInterface
-  calls: signatures of functions in JSON format usable in HTML-code
-  calculator: function name of the calculator implementing those calls
-  contract_attributes: definition of persistent attributes - in JSON format - of tariffitems,
-    which are not part of the data base model
-  parameters: definition of persistent attributes - in JSON format - of tariffs,
-    which are not part of the data base model
-  partnerroles: roles of partner relations from tariffitems
-  mortality_table: id
-
-  
 """
 
 mutable struct TariffInterface
