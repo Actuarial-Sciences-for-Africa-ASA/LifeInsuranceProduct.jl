@@ -17,16 +17,13 @@ function get_tariff_interface()
         {"calculation_target":
           {"selected": "none",
           "label": "calculation target",
-          "options": ["net premium","ä"],
+          "options": ["net premium"],
          "net premium": 
-          {"n":{"type":"Int", "default":0, "value":null},
-          "begin":{"type":"Date", "default":"2020-01-01", "value":null}
-          }, 
-          "ä": 
-          {"n":{"type":"Int", "default":0, "value":null},
-          "m":{"type":"Int", "default":0, "value":null},
-          "frequency":{"type":"Int", "default":0, "value":null},
-          "begin":{"type":"Date", "default":"2020-01-01", "value":null}
+          {"pension rate":{"type":"Int", "default":0, "value":null},
+           "n":{"type":"Int", "default":0, "value":null},
+           "m":{"type":"Int", "default":0, "value":null},
+           "frequency":{"type":"Int", "default":0, "value":null},
+           "begin":{"type":"Date", "default":"2020-01-01", "value":null}
           }
         }, "result": {"value": 0}
         }
@@ -63,19 +60,17 @@ function calculate!(interface_id::Integer, ti::TariffItemSection, params::Dict{S
     #accessing tariff data
     i = ti.tariff_ref.ref.revision.interest_rate
 
-
-
     fn = params["calculation_target"]["selected"]
     args = params["calculation_target"][fn]
-    if fn == "ä"
-
+    if fn == "net premium"
       begindate = Date(args["begin"]["value"])
+      pr = parse(Int, args["pension rate"]["value"])
       n = parse(Int, args["n"]["value"])
       m = parse(Int, args["m"]["value"])
       frq = parse(Int, args["frequency"]["value"])
       issue_age = insurance_age(dob, begindate)
 
-      mts = get_tariff_interface(interface_id).parameters["mortality_tables"]
+      mts = get_tariff_interface().parameters["mortality_tables"]
       life = SingleLife(
         mortality=MortalityTables.table(mts[sex][smoker ? "smoker" : "nonsmoker"]).select[issue_age])
 
@@ -89,7 +84,7 @@ function calculate!(interface_id::Integer, ti::TariffItemSection, params::Dict{S
 
       premium_net(lc)
 
-      params["result"]["value"] = ä(lc, n, start_time=m, frequency=frq)
+      params["result"]["value"] = pr * ä(lc, n, start_time=m, frequency=frq)
     end
   catch err
     println("wassis shief gegangen ")
