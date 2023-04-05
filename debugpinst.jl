@@ -1,65 +1,64 @@
-using BitemporalPostgres
-using LifeInsuranceDataModel
-using SearchLight
-using SearchLightPostgreSQL
-using TimeZones
+using BitemporalPostgres, LifeInsuranceDataModel, LifeInsuranceProduct
+using MortalityTables, LifeContingencies, Yields
+using JSON, SearchLight, SearchLightPostgreSQL, TimeZones
+import LifeContingencies: ä, A
 ENV["SEARCHLIGHT_USERNAME"] = "postgres"
 ENV["SEARCHLIGHT_PASSWORD"] = "postgres"
 SearchLight.Configuration.load() |> SearchLight.connect
-cpRole = Dict{String,Int64}()
-map(find(LifeInsuranceDataModel.ContractPartnerRole)) do entry
-    cpRole[entry.value] = entry.id.value
-end
-tiprRole = Dict{String,Int64}()
-map(find(LifeInsuranceDataModel.TariffItemPartnerRole)) do entry
-    tiprRole[entry.value] = entry.id.value
-end
-woman1 = find(Partner, SQLWhereExpression("id=?", 1))[1]
-man2 = find(Partner, SQLWhereExpression("id=?", 4))[1]
-jointlifeRiskInsurance = find(Product, SQLWhereExpression("id=?", 3))[1]
+cid = 2
+h = find(Contract, SQLWhereExpression("id =?", cid))[1].ref_history
+vi = find(ValidityInterval, SQLWhereExpression("ref_history=?", h), order=["ValidityInterval.id"])[1];
+txntime = vi.tsdb_validfrom
+reftime = vi.tsworld_validfrom
 
-w1 = Workflow(
-    type_of_entity="Contract",
-    tsw_validfrom=ZonedDateTime(2014, 5, 30, 21, 0, 1, 1, tz"UTC"),
-)
+cs = csection(cid, txntime, reftime)
 
-create_entity!(w1)
-c = Contract()
-cr = ContractRevision(description="contract creation properties")
-create_component!(c, cr, w1)
+ti = cs.product_items[1].tariff_items[1]
 
-cpr = ContractPartnerRef(ref_super=c.id)
-cprr = ContractPartnerRefRevision(
-    ref_partner=woman1.id,
-    ref_role=cpRole["Policy Holder"],
-    description="policyholder ref properties",
-)
+tariffparms = JSON.parse(ti.tariff_ref.rev.parameters)
+println(tariffparms)
+mts = tariffparms["mortality_tables"]
+interface_id = ti.tariff_ref.ref.revision.interface_id
+tgt = get_tariff_interface(Val(interface_id)).calls["calculation_target"]
+tgt["selected"] = "net premium"
+parms = tgt[tgt["selected"]]
+parms["m"] = 10
+parms["n"] = 20
+parms["frequency"] = 2
+parms["begin"] = string(Date("2023-04-01"))
 
-create_subcomponent!(c, cpr, cprr, w1)
-# pi 1
-PartnerroleMap = Dict{Integer,PartnerSection}()
-PartnerRole = tiprRole["Insured Person"]
-PartnerroleMap[PartnerRole] = psection(woman1.id.value, now(tz"UTC"), w1.tsw_validfrom, 0)
-PartnerRole = tiprRole["2nd Insured Person"]
-PartnerroleMap[PartnerRole] = psection(man2.id.value, now(tz"UTC"), w1.tsw_validfrom, 0)
+# accessiong partner LifeInsuranceDataModel
+dob1 = ti.partner_refs[1].ref.revision.date_of_birth
+smoker1 = ti.partner_refs[1].ref.revision.smoker ? "smoker" : "nonsmoker"
+sex1 = ti.partner_refs[1].ref.revision.sex
+issue_age1 = LifeInsuranceProduct.insurance_age(dob1, Date(parms["begin"]))
 
+dob2 = ti.partner_refs[2].ref.revision.date_of_birth
+smoker2 = ti.partner_refs[2].ref.revision.smoker ? "smoker" : "nonsmoker"
+sex2 = ti.partner_refs[2].ref.revision.sex
+issue_age2 = LifeInsuranceProduct.insurance_age(dob2, Date(parms["begin"]))
 
-cpi = ProductItem(ref_super=c.id)
-cpir = ProductItemRevision(
-    ref_product=jointlifeRiskInsurance.id.value,
-    description="from contract creation",
-)
-create_subcomponent!(c, cpi, cpir, w1)
+# accessing tariff data
+i = ti.tariff_ref.ref.revision.interest_rate
 
-LifeInsuranceDataModel.create_product_instance(
-    w1,
-    cpi,
-    jointlifeRiskInsurance.id.value,
-    PartnerroleMap,
-)
-commit_workflow!(w1)
-cs = csection(c.id.value, now(tz"UTC"), w1.tsw_validfrom)
+life1 = SingleLife(
+    mortality=MortalityTables.table(mts[sex1][smoker1]).select[issue_age1])
+life2 = SingleLife(
+    mortality=MortalityTables.table(mts[sex2][smoker2]).select[issue_age2])
+jl = JointLife(lives=(life1, life2))
 
-prs = cs.product_items[1].tariff_items[1].partner_refs
-println(prs)
+yield = Yields.Constant(i)      # Using a flat
 
+lc = LifeContingency(jl, yield)  # LifeContingenc
+
+n = 30
+c = 5000
+r1 = A(lc, 42)
+r2 = ä(lc, n)
+5000 * A(lc, 42) / ä(lc, 42, frequency=12)
+A(lc, 30)#
+#/ ä(lc, 30,frequency=1n)
+i
+
+r3 = A(LifeContingency(life1, yield), 42)
+r4 = A(LifeContingency(life2, yield), 42)

@@ -17,21 +17,18 @@ function get_tariff_interface()
         {"calculation_target":
           {"selected": "none",
           "label": "calculation target",
-          "options": ["net premium","ä"],
+          "options": ["net premium"],
          "net premium": 
           {"n":{"type":"Int", "default":0, "value":null},
-          "begin":{"type":"Date", "default":"2020-01-01", "value":null}
-          }, 
-          "ä": 
-          {"n":{"type":"Int", "default":0, "value":null},
-          "m":{"type":"Int", "default":0, "value":null},
-          "frequency":{"type":"Int", "default":0, "value":null},
-          "begin":{"type":"Date", "default":"2020-01-01", "value":null}
+          "begin":{"type":"Date", "default":"2020-01-01", "value":null},
+          "sum insured": {"type":"Int", "default":0, "value":null}
           }
         }, "result": {"value": 0}
         }
       """)
-    attributes = JSON.parse("""{"mortality_tables":
+    attributes = JSON.parse("""{
+        "interest rate": 0.02,
+        "mortality_tables":
         { "f": {"nonsmoker": "1986-92 CIA – Female Nonsmoker, ANB",
               "smoker": "1986-92 CIA – Female Smoker, ANB" },
         "m":{"nonsmoker": "1986-92 CIA – Male Nonsmoker, ANB",
@@ -40,8 +37,8 @@ function get_tariff_interface()
       }
       """)
     tariffitem_attributes = JSON.parse("""
-    {"n":{"type":"Int", "default":0, "value":null},
-      "m":{"type":"Int", "default":0, "value":null},
+    { "sum_insured":{"type":"Int", "default":0, "value":null},
+      "n":{"type":"Int", "default":0, "value":null},
       "frequency":{"type":"Int", "default":0, "value":null},
       "begin":{"type":"Date", "default":"2020-01-01", "value":null}
     }""")
@@ -61,35 +58,42 @@ function calculate!(interface_id::Integer, ti::TariffItemSection, params::Dict{S
     smoker = pr.smoker
 
     #accessing tariff data
-    i = ti.tariff_ref.ref.revision.interest_rate
-
-
+    tariffparameters = get_tariff_interface().parameters
+    mts = tariffparameters["mortality_tables"]
+    i = tariffparameters["interest rate"]
 
     fn = params["calculation_target"]["selected"]
     args = params["calculation_target"][fn]
-    if fn == "ä"
+    if fn == "net premium"
 
       begindate = Date(args["begin"]["value"])
       n = parse(Int, args["n"]["value"])
-      m = parse(Int, args["m"]["value"])
+      C = parse(Integer, args("insured sum"))
       frq = parse(Int, args["frequency"]["value"])
-      issue_age = insurance_age(dob, begindate)
+      dob1 = ti.partner_refs[1].ref.revision.date_of_birth
+      smoker1 = ti.partner_refs[1].ref.revision.smoker ? "smoker" : "nonsmoker"
+      sex1 = ti.partner_refs[1].ref.revision.sex
+      issue_age1 = LifeInsuranceProduct.insurance_age(dob1, Date(parms["begin"]))
 
-      mts = get_tariff_interface(interface_id).parameters["mortality_tables"]
-      life = SingleLife(
-        mortality=MortalityTables.table(mts[sex][smoker ? "smoker" : "nonsmoker"]).select[issue_age])
+      dob2 = ti.partner_refs[2].ref.revision.date_of_birth
+      smoker2 = ti.partner_refs[2].ref.revision.smoker ? "smoker" : "nonsmoker"
+      sex2 = ti.partner_refs[2].ref.revision.sex
+      issue_age2 = LifeInsuranceProduct.insurance_age(dob2, Date(parms["begin"]))
 
-      yield = Yields.Constant(i)      # Using a flat 1,25% interest rate
+      # accessing tariff data
+      i = ti.tariff_ref.ref.revision.interest_rate
 
-      lc = LifeContingency(life, yield)  # LifeContingency joins the risk with interest
+      life1 = SingleLife(
+        mortality=MortalityTables.table(mts[sex1][smoker1]).select[issue_age1])
+      life2 = SingleLife(
+        mortality=MortalityTables.table(mts[sex2][smoker2]).select[issue_age2])
+      jl = JointLife(lives=(life1, life2))
 
+      yield = Yields.Constant(i)      # Using a flat
 
-      ins = Insurance(lc)                # Whole Life insurance
-      ins = Insurance(life, yield)       # alternate way to construct
+      lc = LifeContingency(jl, yield)  # LifeContingenc
 
-      premium_net(lc)
-
-      params["result"]["value"] = ä(lc, n, start_time=m, frequency=frq)
+      params["result"]["value"] = C * A(lc, n) / ä(lc, n, frequency=1n)
     end
   catch err
     println("wassis shief gegangen ")

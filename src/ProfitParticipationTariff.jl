@@ -16,7 +16,9 @@ function get_tariff_interface()
     calls = JSON.parse("""
         {"result": {"value": 0}}
       """)
-    attributes = JSON.parse("""{"mortality_tables":
+    attributes = JSON.parse("""{
+       "interest rate": 0.02,
+       "mortality_tables":
         { "f": {"nonsmoker": "1986-92 CIA – Female Nonsmoker, ANB",
               "smoker": "1986-92 CIA – Female Smoker, ANB" },
         "m":{"nonsmoker": "1986-92 CIA – Male Nonsmoker, ANB",

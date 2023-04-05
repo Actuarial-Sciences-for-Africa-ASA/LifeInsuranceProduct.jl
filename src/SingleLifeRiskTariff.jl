@@ -17,26 +17,18 @@ function get_tariff_interface()
         {"calculation_target":
           {"selected": "none",
           "label": "calculation target",
-          "options": ["net premium","ä"],
+          "options": ["net premium"],
          "net premium": 
           {"n":{"type":"Int", "default":0, "value":null},
-          "begin":{"type":"Date", "default":"2020-01-01", "value":null}
-          }, 
-          "ä": 
-          {"n":{"type":"Int", "default":0, "value":null},
-          "m":{"type":"Int", "default":0, "value":null},
-          "frequency":{"type":"Int", "default":0, "value":null},
-          "begin":{"type":"Date", "default":"2020-01-01", "value":null}
-          },
-          "A": 
-          {"n":{"type":"Int", "default":0, "value":null},
-          "frequency":{"type":"Int", "default":0, "value":null},
+          "sum insured":{"type":"Int", "default":0, "value":null},
           "begin":{"type":"Date", "default":"2020-01-01", "value":null}
           }
         }, "result": {"value": 0}
         }
       """)
-    attributes = JSON.parse("""{"mortality_tables":
+    attributes = JSON.parse("""
+      { "interest rate": 0.02,
+        "mortality_tables":
         { "f": {"nonsmoker": "1986-92 CIA – Female Nonsmoker, ANB",
               "smoker": "1986-92 CIA – Female Smoker, ANB" },
         "m":{"nonsmoker": "1986-92 CIA – Male Nonsmoker, ANB",
@@ -45,8 +37,8 @@ function get_tariff_interface()
       }
       """)
     tariffitem_attributes = JSON.parse("""
-    {"n":{"type":"Int", "default":0, "value":null},
-      "m":{"type":"Int", "default":0, "value":null},
+    {"sum insured":{"type":"Int", "default":0, "value":null},
+      "n":{"type":"Int", "default":0, "value":null},
       "frequency":{"type":"Int", "default":0, "value":null},
       "begin":{"type":"Date", "default":"2020-01-01", "value":null}
     }""")
@@ -66,9 +58,9 @@ function calculate!(interface_id::Integer, ti::TariffItemSection, params::Dict{S
     smoker = pr.smoker
 
     #accessing tariff data
-    i = ti.tariff_ref.ref.revision.interest_rate
-
-
+    tariffparameters = get_tariff_interface().parameters
+    mts = tariffparameters["mortality_tables"]
+    i = tariffparameters["interest rate"]
 
     fn = params["calculation_target"]["selected"]
     args = params["calculation_target"][fn]
@@ -80,7 +72,6 @@ function calculate!(interface_id::Integer, ti::TariffItemSection, params::Dict{S
       frq = parse(Int, args["frequency"]["value"])
       issue_age = insurance_age(dob, begindate)
 
-      mts = get_tariff_interface(interface_id).parameters["mortality_tables"]
       life = SingleLife(
         mortality=MortalityTables.table(mts[sex][smoker ? "smoker" : "nonsmoker"]).select[issue_age])
 
