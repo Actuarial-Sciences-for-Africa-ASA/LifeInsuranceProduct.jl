@@ -17,13 +17,13 @@ using LifeInsuranceDataModel, LifeInsuranceProduct, SearchLight
 import SearchLight: Serializer.serialize
 
 tif = get_tariff_interface(Val(1))
-ProfitParticipationTariff = create_tariff("Profit participation", 1, serialize(tif.parameters),serialize(tif.contract_attributes))
+ProfitParticipationTariff = create_tariff("Profit participation", 1, serialize(tif.parameters), serialize(tif.contract_attributes))
 tif = get_tariff_interface(Val(2))
 PensionTariff = create_tariff("Pension Insurance", 2, serialize(tif.parameters), serialize(tif.contract_attributes))
 tif = get_tariff_interface(Val(3))
 SingleLifeRiskTariff = create_tariff("Single Life Risk Insurance", 3, serialize(tif.parameters), serialize(tif.contract_attributes))
 tif = get_tariff_interface(Val(4))
-JointLifeRiskTariff = create_tariff("Joint Life Risk Insurance", 4, serialize(tif.parameters), serialize(tif.contract_attributes),[1,2])
+JointLifeRiskTariff = create_tariff("Joint Life Risk Insurance", 4, serialize(tif.parameters), serialize(tif.contract_attributes), [1, 2])
 
 
 
@@ -142,7 +142,7 @@ rolesTariffItemPartner = load_role(TariffItemPartnerRole)
 #   create partner woman1 nonsmoker
 
 woman1 = LifeInsuranceDataModel.Partner()
-pr = LifeInsuranceDataModel.PartnerRevision(description="woman 1",sex="f",smoker=false)
+pr = LifeInsuranceDataModel.PartnerRevision(description="woman 1", sex="f", smoker=false)
 w = Workflow(type_of_entity="Partner",
     tsw_validfrom=ZonedDateTime(2014, 5, 30, 21, 0, 1, 1, tz"UTC"),
 )
@@ -153,7 +153,7 @@ commit_workflow!(w)
 #   create partner woman2 smoker
 
 woman2 = LifeInsuranceDataModel.Partner()
-pr = LifeInsuranceDataModel.PartnerRevision(description="woman 2",sex="f",smoker=true)
+pr = LifeInsuranceDataModel.PartnerRevision(description="woman 2", sex="f", smoker=true)
 w = Workflow(type_of_entity="Partner",
     tsw_validfrom=ZonedDateTime(2014, 5, 30, 21, 0, 1, 1, tz"UTC"),
 )
@@ -164,7 +164,7 @@ commit_workflow!(w)
 #   create partner man1 nonsmoker
 
 man1 = LifeInsuranceDataModel.Partner()
-pr = LifeInsuranceDataModel.PartnerRevision(description="man 1",sex="m",smoker=false)
+pr = LifeInsuranceDataModel.PartnerRevision(description="man 1", sex="m", smoker=false)
 w = Workflow(type_of_entity="Partner",
     tsw_validfrom=ZonedDateTime(2014, 5, 30, 21, 0, 1, 1, tz"UTC"),
 )
@@ -176,7 +176,7 @@ man1
 #   create partner man2 smoker
 
 man2 = LifeInsuranceDataModel.Partner()
-pr = LifeInsuranceDataModel.PartnerRevision(description="man 2",sex="m",smoker=true)
+pr = LifeInsuranceDataModel.PartnerRevision(description="man 2", sex="m", smoker=true)
 w = Workflow(type_of_entity="Partner",
     tsw_validfrom=ZonedDateTime(2014, 5, 30, 21, 0, 1, 1, tz"UTC"),
 )
@@ -320,13 +320,13 @@ cs = csection(cid, txntime, reftime)
 ti = cs.product_items[1].tariff_items[1]
 
 
-using JSON, LifeInsuranceProduct,MortalityTables,LifeContingencies,Yields
+using JSON, LifeInsuranceProduct, MortalityTables, LifeContingencies, Yields
 import LifeContingencies: ä, A
 tariffparms = JSON.parse(ti.tariff_ref.ref.revision.parameters)
 mts = tariffparms["mortality_tables"]
 interface_id = ti.tariff_ref.ref.revision.interface_id
 parms = get_tariff_interface(Val(interface_id)).calls
-args=parms["calculation_target"]
+args = parms["calculation_target"]
 args["selected"] = "net premium"
 args["net premium"]["pension rate"]["value"] = "500"
 args["net premium"]["m"]["value"] = "10"
@@ -335,7 +335,7 @@ args["net premium"]["frequency"]["value"] = "2"
 args["net premium"]["begin"]["value"] = string(Date("2023-04-01"))
 parms
 parms["calculation_target"]
-calculate!(Val(interface_id),ti,parms)
+calculate!(Val(interface_id), ti, parms)
 parms["result"]
 
 tariffparms = JSON.parse(ti.tariff_ref.ref.revision.parameters)
@@ -358,18 +358,18 @@ smoker = ti.partner_refs[1].ref.revision.smoker ? "smoker" : "nonsmoker"
 sex = ti.partner_refs[1].ref.revision.sex
 # accessing tariff data
 
-issue_age = LifeInsuranceProduct.insurance_age(dob, Date(parms["begin"]))
+issue_age = TariffUtilities.insurance_age(dob, Date(parms["begin"]))
 
 life = SingleLife(
     mortality=MortalityTables.table(mts[sex][smoker]).select[issue_age])
 
 yield = Yields.Constant(i)      # Using a flat
 
-lc = LifeContingency(life,yield)  # LifeContingenc
+lc = LifeContingency(life, yield)  # LifeContingenc
 
 
 r1 = ä(lc)
-r2 = ä(lc,1)
+r2 = ä(lc, 1)
 r3 = ä(lc, 2)
 r4 = ä(lc, 30)
 
@@ -410,12 +410,12 @@ parms["begin"] = string(Date("2023-04-01"))
 dob1 = ti.partner_refs[1].ref.revision.date_of_birth
 smoker1 = ti.partner_refs[1].ref.revision.smoker ? "smoker" : "nonsmoker"
 sex1 = ti.partner_refs[1].ref.revision.sex
-issue_age1 = LifeInsuranceProduct.insurance_age(dob1, Date(parms["begin"]))
+issue_age1 = TariffUtilities.insurance_age(dob1, Date(parms["begin"]))
 
 dob2 = ti.partner_refs[2].ref.revision.date_of_birth
 smoker2 = ti.partner_refs[2].ref.revision.smoker ? "smoker" : "nonsmoker"
 sex2 = ti.partner_refs[2].ref.revision.sex
-issue_age2 = LifeInsuranceProduct.insurance_age(dob2, Date(parms["begin"]))
+issue_age2 = TariffUtilities.insurance_age(dob2, Date(parms["begin"]))
 
 # accessing tariff data
 
@@ -424,17 +424,17 @@ life1 = SingleLife(
     mortality=MortalityTables.table(mts[sex1][smoker1]).select[issue_age1])
 life2 = SingleLife(
     mortality=MortalityTables.table(mts[sex2][smoker2]).select[issue_age2])
- jl= JointLife(lives=(life1,life2))
+jl = JointLife(lives=(life1, life2))
 
 yield = Yields.Constant(i)      # Using a flat
 
 lc = LifeContingency(jl, yield)  # LifeContingenc
 
-n=30
-c=5000
-r1 = A(lc,30)
-r2=ä(lc,n)
+n = 30
+c = 5000
+r1 = A(lc, 30)
+r2 = ä(lc, n)
 5000 * A(lc, 30) / ä(lc, 30, frequency=1n)
-A(lc,30)#
- #/ ä(lc, 30,frequency=1n)
- i
+A(lc, 30)#
+#/ ä(lc, 30,frequency=1n)
+i

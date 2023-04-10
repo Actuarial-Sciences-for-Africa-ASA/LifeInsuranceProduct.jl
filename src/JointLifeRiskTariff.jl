@@ -2,7 +2,7 @@ module JointLifeRiskTariff
 using LifeInsuranceDataModel, JSON, Dates, LifeContingencies
 using MortalityTables
 using Yields
-import LifeContingencies: V, ä     # pull the shortform notation into scope
+import LifeContingencies: V, ä, A     # pull the shortform notation into scope
 include("TariffUtilities.jl")
 using .TariffUtilities
 
@@ -21,9 +21,11 @@ function get_tariff_interface()
          "net premium": 
           {"n":{"type":"Int", "default":0, "value":null},
           "begin":{"type":"Date", "default":"2020-01-01", "value":null},
-          "sum insured": {"type":"Int", "default":0, "value":null}
+          "sum insured": {"type":"Int", "default":0, "value":null},
+          "frequency": {"type":"Int", "default":0, "value":null},
+          "net premium": {"value": 0}
           }
-        }, "result": {"value": 0}
+        },"result": {"value": 0.0}
         }
       """)
     attributes = JSON.parse("""{
@@ -65,24 +67,18 @@ function calculate!(interface_id::Integer, ti::TariffItemSection, params::Dict{S
     fn = params["calculation_target"]["selected"]
     args = params["calculation_target"][fn]
     if fn == "net premium"
-
-      begindate = Date(args["begin"]["value"])
-      n = parse(Int, args["n"]["value"])
-      C = parse(Integer, args("insured sum"))
-      frq = parse(Int, args["frequency"]["value"])
+      n = args["n"]
+      C = args["sum insured"]
+      frq = args["frequency"]
       dob1 = ti.partner_refs[1].ref.revision.date_of_birth
       smoker1 = ti.partner_refs[1].ref.revision.smoker ? "smoker" : "nonsmoker"
       sex1 = ti.partner_refs[1].ref.revision.sex
-      issue_age1 = LifeInsuranceProduct.insurance_age(dob1, Date(parms["begin"]))
+      issue_age1 = TariffUtilities.insurance_age(dob1, Date(args["begin"]))
 
       dob2 = ti.partner_refs[2].ref.revision.date_of_birth
       smoker2 = ti.partner_refs[2].ref.revision.smoker ? "smoker" : "nonsmoker"
       sex2 = ti.partner_refs[2].ref.revision.sex
-      issue_age2 = LifeInsuranceProduct.insurance_age(dob2, Date(parms["begin"]))
-
-      # accessing tariff data
-      i = ti.tariff_ref.ref.revision.interest_rate
-
+      issue_age2 = TariffUtilities.insurance_age(dob2, Date(args["begin"]))
       life1 = SingleLife(
         mortality=MortalityTables.table(mts[sex1][smoker1]).select[issue_age1])
       life2 = SingleLife(
@@ -92,8 +88,10 @@ function calculate!(interface_id::Integer, ti::TariffItemSection, params::Dict{S
       yield = Yields.Constant(i)      # Using a flat
 
       lc = LifeContingency(jl, yield)  # LifeContingenc
-
-      params["result"]["value"] = C * A(lc, n) / ä(lc, n, frequency=1n)
+      r0 = A(lc, n)
+      r1 = ä(lc, n, frequency=1)
+      result = C * r0 / r1
+      params["result"]["value"] = result
     end
   catch err
     println("wassis shief gegangen ")
