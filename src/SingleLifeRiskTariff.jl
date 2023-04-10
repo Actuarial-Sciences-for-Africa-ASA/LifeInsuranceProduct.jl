@@ -20,6 +20,7 @@ function get_tariff_interface()
           "options": ["net premium"],
          "net premium": 
           {"n":{"type":"Int", "default":0, "value":null},
+          "frequency":{"type":"Int", "default":0, "value":null},
           "sum insured":{"type":"Int", "default":0, "value":null},
           "begin":{"type":"Date", "default":"2020-01-01", "value":null}
           }
@@ -50,13 +51,6 @@ end
 
 function calculate!(interface_id::Integer, ti::TariffItemSection, params::Dict{String,Any})
   try
-
-    # accessiong partner data
-    pr = ti.partner_refs[1].ref.revision
-    dob = pr.date_of_birth
-    sex = pr.sex
-    smoker = pr.smoker
-
     #accessing tariff data
     tariffparameters = get_tariff_interface().parameters
     mts = tariffparameters["mortality_tables"]
@@ -64,28 +58,26 @@ function calculate!(interface_id::Integer, ti::TariffItemSection, params::Dict{S
 
     fn = params["calculation_target"]["selected"]
     args = params["calculation_target"][fn]
-    if fn == "ä"
-
+    if fn == "net premium"
+      n = args["n"]["value"]
+      C = args["sum insured"]["value"]
+      frq = args["frequency"]["value"]
       begindate = Date(args["begin"]["value"])
-      n = parse(Int, args["n"]["value"])
-      m = parse(Int, args["m"]["value"])
-      frq = parse(Int, args["frequency"]["value"])
-      issue_age = insurance_age(dob, begindate)
+      dob1 = ti.partner_refs[1].ref.revision.date_of_birth
+      smoker1 = ti.partner_refs[1].ref.revision.smoker ? "smoker" : "nonsmoker"
+      sex1 = ti.partner_refs[1].ref.revision.sex
+      issue_age1 = TariffUtilities.insurance_age(dob1, begindate)
 
-      life = SingleLife(
-        mortality=MortalityTables.table(mts[sex][smoker ? "smoker" : "nonsmoker"]).select[issue_age])
+      life1 = SingleLife(
+        mortality=MortalityTables.table(mts[sex1][smoker1]).select[issue_age1])
 
-      yield = Yields.Constant(i)      # Using a flat 1,25% interest rate
+      yield = Yields.Constant(i)      # Using a flat
 
-      lc = LifeContingency(life, yield)  # LifeContingency joins the risk with interest
-
-
-      ins = Insurance(lc)                # Whole Life insurance
-      ins = Insurance(life, yield)       # alternate way to construct
-
-      premium_net(lc)
-
-      params["result"]["value"] = ä(lc, n, start_time=m, frequency=frq)
+      lc = LifeContingency(life1, yield)  # LifeContingenc
+      r0 = A(lc, n)
+      r1 = ä(lc, n, frequency=frq)
+      result = C * r0 / r1
+      params["result"]["value"] = result
     end
   catch err
     println("wassis shief gegangen ")
