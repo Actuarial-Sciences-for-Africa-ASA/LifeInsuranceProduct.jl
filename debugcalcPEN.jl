@@ -28,4 +28,16 @@ parms["pension rate"]["value"] = "500"
 
 tif.calculator(interface_id, ti, tif.calls)
 
-println(tif.calls)
+@info "net premium ================================"
+@show tif.calls
+tgt["selected"] = "pension rate"
+parms = tgt[tgt["selected"]]
+parms["n"]["value"] = "20"
+parms["m"]["value"] = "20"
+parms["frequency"]["value"] = "12"
+parms["begin"]["value"] = "2023-04-01"
+parms["net premium"]["value"] = "20"
+tif.calculator(interface_id, ti, tif.calls)
+@info "pension rate ======================="
+@show tif.calls
+
