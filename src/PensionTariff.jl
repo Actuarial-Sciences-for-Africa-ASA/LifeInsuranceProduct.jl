@@ -68,10 +68,10 @@ function calculate!(interface_id::Integer, ti::TariffItemSection, params::Dict{S
     args = params["calculation_target"][fn]
     if fn == "net premium"
       begindate = Date(args["begin"]["value"])
-      pr = args["pension rate"]["value"]
-      m = args["m"]["value"]
-      n = args["n"]["value"]
-      frq = args["frequency"]["value"]
+      pr = parse(Int, args["pension rate"]["value"])
+      m = parse(Int, args["m"]["value"])
+      n = parse(Int, args["n"]["value"])
+      frq = parse(Int, args["frequency"]["value"])
       issue_age = insurance_age(dob, begindate)
 
       life = SingleLife(

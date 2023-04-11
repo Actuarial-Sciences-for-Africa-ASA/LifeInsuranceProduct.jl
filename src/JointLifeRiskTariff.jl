@@ -59,9 +59,9 @@ function calculate!(interface_id::Integer, ti::TariffItemSection, params::Dict{S
     fn = params["calculation_target"]["selected"]
     args = params["calculation_target"][fn]
     if fn == "net premium"
-      n = args["n"]["value"]
-      C = args["sum insured"]["value"]
-      frq = args["frequency"]["value"]
+      n = parse(Int, args["n"]["value"])
+      C = parse(Int, args["sum insured"]["value"])
+      frq = parse(Int, args["frequency"]["value"])
       begindate = Date(args["begin"]["value"])
       dob1 = ti.partner_refs[1].ref.revision.date_of_birth
       smoker1 = ti.partner_refs[1].ref.revision.smoker ? "smoker" : "nonsmoker"
