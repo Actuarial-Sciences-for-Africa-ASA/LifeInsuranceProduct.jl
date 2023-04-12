@@ -18,7 +18,7 @@ function get_tariff_interface()
           {"selected": "none",
           "label": "calculation target",
           "options": ["net premium"],
-         "net premium": 
+          "net premium": 
           {"n":{"type":"Int", "default":0, "value":null},
           "begin":{"type":"Date", "default":"2020-01-01", "value":null},
           "sum insured": {"type":"Int", "default":0, "value":null},
@@ -38,11 +38,11 @@ function get_tariff_interface()
       }
       """)
     tariffitem_attributes = JSON.parse("""
-    { "sum_insured":{"type":"Int", "default":0, "value":null},
+    { "sum insured":{"type":"Int", "default":0, "value":null},
       "n":{"type":"Int", "default":0, "value":null},
       "frequency":{"type":"Int", "default":0, "value":null},
       "begin":{"type":"Date", "default":"2020-01-01", "value":null},
-      "net premium":{"type":"Int", "default":0, "value":null},
+      "net premium":{"type":"Int", "default":0, "value":null}
     }""")
     partnerroles = [1]
     TariffInterface("Life Risk Insurance",
