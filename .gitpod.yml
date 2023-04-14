@@ -4,6 +4,6 @@ image:
 tasks:
   - init: echo 'PATH_add ~/dev/julia-1.8.0/bin' > /workspace/.envrc  \
       && echo 'export SEARCHLIGHT_USERNAME="gitpod"' >> /workspace/.envrc \
-      && julia -e 'using Pkg; Pkg.activate("."); Pkg.instantiate();using NBInclude;@nbinclude("testAPI.ipynb")'
+      && ~/dev/julia-1.8.0/bin/julia -e 'using Pkg; Pkg.activate("."); Pkg.instantiate();using NBInclude;@nbinclude("testAPI.ipynb")'
   #- command: python3 -m http.server 8080 -d docs/build
   #- command: gp preview $(gp url 8080)
