@@ -1,7 +1,10 @@
+
+#using Pkg
+#Pkg.instantiate()
 using BitemporalPostgres, LifeInsuranceDataModel, LifeInsuranceProduct
 using JSON, SearchLight, SearchLightPostgreSQL, TimeZones
-ENV["SEARCHLIGHT_USERNAME"] = "postgres"
-ENV["SEARCHLIGHT_PASSWORD"] = "postgres"
+ENV["SEARCHLIGHT_USERNAME"] = "gitpod"
+ENV["SEARCHLIGHT_PASSWORD"] = "gitpod "
 SearchLight.Configuration.load() |> SearchLight.connect
 cid = 2
 h = find(Contract, SQLWhereExpression("id =?", cid))[1].ref_history
