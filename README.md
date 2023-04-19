@@ -24,12 +24,12 @@ comprising computation of
 
 To explore usage of this package
 use the debugger on these scripts:
-  - [SingleLifeRiskTariff](debugCalcSLR.jl)
-    - [JointLifeRiskTariff](debugCalcSLR.jl)
-    - [PensionTariff](debugCalcPEN.jl)
+  - [SingleLifeRiskTariff](debugcalcSLR.jl)
+  - [JointLifeRiskTariff](debugcalcSLR.jl)
+  - [PensionTariff](debugcalcPEN.jl)
 
 To populate the data base use this 
  - [notebook](testAPI.ipynb) or
-- [script](testAPI.ipynb)
+ - [script](testAPI.jl)
 
 
