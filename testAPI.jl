@@ -1,7 +1,6 @@
 using BitemporalPostgres
 using LifeInsuranceDataModel, LifeInsuranceProduct
 using SearchLight
-using SearchLightPostgreSQL
 using TimeZones
 ENV["SEARCHLIGHT_USERNAME"] = ENV["USER"]
 ENV["SEARCHLIGHT_PASSWORD"] = ENV["USER"]
@@ -16,15 +15,14 @@ LifeInsuranceDataModel.load_model()
 using LifeInsuranceDataModel, LifeInsuranceProduct, SearchLight
 import SearchLight: Serializer.serialize
 
-tif = get_tariff_interface(Val(1))
+tif = get_tariff_interface(1)
 ProfitParticipationTariff = create_tariff("Profit participation", 1, serialize(tif.parameters), serialize(tif.contract_attributes))
-tif = get_tariff_interface(Val(2))
+tif = get_tariff_interface(2)
 PensionTariff = create_tariff("Pension Insurance", 2, serialize(tif.parameters), serialize(tif.contract_attributes))
-tif = get_tariff_interface(Val(3))
+tif = get_tariff_interface(3)
 SingleLifeRiskTariff = create_tariff("Single Life Risk Insurance", 3, serialize(tif.parameters), serialize(tif.contract_attributes))
-tif = get_tariff_interface(Val(4))
+tif = get_tariff_interface(4)
 JointLifeRiskTariff = create_tariff("Joint Life Risk Insurance", 4, serialize(tif.parameters), serialize(tif.contract_attributes), [1, 2])
-
 
 
 cpRole = Dict{String,Int64}()
@@ -68,7 +66,7 @@ ppr2 = ProductPartRevision(
 
 w0 = Workflow(
     type_of_entity="Product",
-    tsw_validfrom=ZonedDateTime(2023, 4, 1, 21, 0, 1, 1, tz"UTC"),
+    tsw_validfrom=ZonedDateTime(2000, 1, 1, 0, 0, 0, 0, tz"UTC"),
 )
 create_entity!(w0)
 create_component!(pensionInsurance, pr, w0)
@@ -98,7 +96,7 @@ ppr2 = ProductPartRevision(
 
 w0 = Workflow(
     type_of_entity="Product",
-    tsw_validfrom=ZonedDateTime(2023, 4, 1, 21, 0, 1, 1, tz"UTC"),
+    tsw_validfrom=ZonedDateTime(2000, 1, 1, 0, 0, 0, 0, tz"UTC"),
 )
 create_entity!(w0)
 create_component!(singlelifeRiskInsurance, pr, w0)
@@ -128,7 +126,7 @@ ppr2 = ProductPartRevision(
 
 w0 = Workflow(
     type_of_entity="Product",
-    tsw_validfrom=ZonedDateTime(2023, 4, 1, 21, 0, 1, 1, tz"UTC"),
+    tsw_validfrom=ZonedDateTime(2000, 1, 1, 0, 0, 0, 0, tz"UTC"),
 )
 create_entity!(w0)
 create_component!(jointlifeRiskInsurance, pr, w0)
@@ -307,134 +305,7 @@ LifeInsuranceDataModel.create_product_instance(
 )
 commit_workflow!(w1)
 
-#   calculation pension insurance net preminum
-
-cid = 1
-h = find(Contract, SQLWhereExpression("id =?", cid))[1].ref_history
-vi = find(ValidityInterval, SQLWhereExpression("ref_history=?", h), order=["ValidityInterval.id"])[1];
-txntime = vi.tsdb_validfrom
-reftime = vi.tsworld_validfrom
-
-cs = csection(cid, txntime, reftime)
-
-ti = cs.product_items[1].tariff_items[1]
-
-
-using JSON, LifeInsuranceProduct, MortalityTables, LifeContingencies, Yields
-import LifeContingencies: ä, A
-tariffparms = JSON.parse(ti.tariff_ref.ref.revision.parameters)
-mts = tariffparms["mortality_tables"]
-interface_id = ti.tariff_ref.ref.revision.interface_id
-parms = get_tariff_interface(Val(interface_id)).calls
-args = parms["calculation_target"]
-args["selected"] = "net premium"
-args["net premium"]["pension rate"]["value"] = "500"
-args["net premium"]["m"]["value"] = "10"
-args["net premium"]["n"]["value"] = "20"
-args["net premium"]["frequency"]["value"] = "2"
-args["net premium"]["begin"]["value"] = string(Date("2023-04-01"))
-parms
-parms["calculation_target"]
-calculate!(Val(interface_id), ti, parms)
-parms["result"]
-
-tariffparms = JSON.parse(ti.tariff_ref.ref.revision.parameters)
-println(tariffparms)
-interface_id = ti.tariff_ref.ref.revision.interface_id
-mts = tariffparms["mortality_tables"]
-i = tariffparms["interest rate"]
-tgt = get_tariff_interface(Val(interface_id)).calls["calculation_target"]
-tgt["selected"] = "net premium"
-parms = tgt[tgt["selected"]]
-parms["m"] = 10
-parms["n"] = 20
-parms["frequency"] = 2
-parms["begin"] = string(Date("2023-04-01"))
-
-
-# accessiong partner LifeInsuranceDataModel
-dob = ti.partner_refs[1].ref.revision.date_of_birth
-smoker = ti.partner_refs[1].ref.revision.smoker ? "smoker" : "nonsmoker"
-sex = ti.partner_refs[1].ref.revision.sex
-# accessing tariff data
-
-issue_age = TariffUtilities.insurance_age(dob, Date(parms["begin"]))
-
-life = SingleLife(
-    mortality=MortalityTables.table(mts[sex][smoker]).select[issue_age])
-
-yield = Yields.Constant(i)      # Using a flat
-
-lc = LifeContingency(life, yield)  # LifeContingenc
-
-
-r1 = ä(lc)
-r2 = ä(lc, 1)
-r3 = ä(lc, 2)
-r4 = ä(lc, 30)
-
-println("r1")
-println(r1)
-println("r2")
-println(r2)
-println("r3")
-println(r3)
-println("r4")
-println(r4)
-r4
-
-cid = 2
-h = find(Contract, SQLWhereExpression("id =?", cid))[1].ref_history
-vi = find(ValidityInterval, SQLWhereExpression("ref_history=?", h), order=["ValidityInterval.id"])[1];
-txntime = vi.tsdb_validfrom
-reftime = vi.tsworld_validfrom
-
-cs = csection(cid, txntime, reftime)
-
-ti = cs.product_items[1].tariff_items[1]
-
-tariffparms = JSON.parse(ti.tariff_ref.ref.revision.parameters)
-println(tariffparms)
-mts = tariffparms["mortality_tables"]
-i = tariffparms["interest rate"]
-interface_id = ti.tariff_ref.ref.revision.interface_id
-tgt = get_tariff_interface(Val(interface_id)).calls["calculation_target"]
-tgt["selected"] = "net premium"
-parms = tgt[tgt["selected"]]
-parms["m"] = 10
-parms["n"] = 20
-parms["frequency"] = 2
-parms["begin"] = string(Date("2023-04-01"))
-
-# accessiong partner LifeInsuranceDataModel
-dob1 = ti.partner_refs[1].ref.revision.date_of_birth
-smoker1 = ti.partner_refs[1].ref.revision.smoker ? "smoker" : "nonsmoker"
-sex1 = ti.partner_refs[1].ref.revision.sex
-issue_age1 = TariffUtilities.insurance_age(dob1, Date(parms["begin"]))
-
-dob2 = ti.partner_refs[2].ref.revision.date_of_birth
-smoker2 = ti.partner_refs[2].ref.revision.smoker ? "smoker" : "nonsmoker"
-sex2 = ti.partner_refs[2].ref.revision.sex
-issue_age2 = TariffUtilities.insurance_age(dob2, Date(parms["begin"]))
-
-# accessing tariff data
-
-
-life1 = SingleLife(
-    mortality=MortalityTables.table(mts[sex1][smoker1]).select[issue_age1])
-life2 = SingleLife(
-    mortality=MortalityTables.table(mts[sex2][smoker2]).select[issue_age2])
-jl = JointLife(lives=(life1, life2))
-
-yield = Yields.Constant(i)      # Using a flat
-
-lc = LifeContingency(jl, yield)  # LifeContingenc
-
-n = 30
-c = 5000
-r1 = A(lc, 30)
-r2 = ä(lc, n)
-5000 * A(lc, 30) / ä(lc, 30, frequency=1n)
-A(lc, 30)#
-#/ ä(lc, 30,frequency=1n)
-i
+include("testCalcPEN.jl")
+include("testCalcSLR.jl")
+include("testCalcJLR.jl")
+include("tesValidate.jl")

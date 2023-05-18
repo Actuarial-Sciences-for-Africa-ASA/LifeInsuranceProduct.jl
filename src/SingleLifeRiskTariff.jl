@@ -50,7 +50,7 @@ function get_tariff_interface()
   end
 end
 
-function calculate!(interface_id::Integer, ti::TariffItemSection, params::Dict{String,Any})
+function calculate!(ti::TariffItemSection, params::Dict{String,Any})
   try
     #accessing tariff data
     tariffparameters = get_tariff_interface().parameters

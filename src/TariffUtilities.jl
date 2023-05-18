@@ -23,7 +23,6 @@ function insurance_age(dob, begindate)::Integer
   end
 end
 
-
 function get_tariff_interface(interface_id::Val{T}) where {T<:Integer}
 end
 
