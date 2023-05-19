@@ -1,8 +1,8 @@
 using BitemporalPostgres, LifeInsuranceDataModel, LifeInsuranceProduct
 using JSON, SearchLight, TimeZones
 
-ENV["SEARCHLIGHT_USERNAME"] = "postgres"
-ENV["SEARCHLIGHT_PASSWORD"] = "postgres"
+ENV["SEARCHLIGHT_USERNAME"] = ENV["USER"]
+ENV["SEARCHLIGHT_PASSWORD"] = ENV["USER"]
 SearchLight.Configuration.load() |> SearchLight.connect
 cid = 3
 h = find(Contract, SQLWhereExpression("id =?", cid))[1].ref_history

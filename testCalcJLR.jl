@@ -24,5 +24,3 @@ parms["begin"]["value"] = "2023-04-01"
 parms["sum insured"]["value"] = "20000"
 
 tif.calculator(ti, tif.calls)
-
-println(tif.calls)

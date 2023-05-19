@@ -22,4 +22,14 @@ comprising computation of
     - [PensionTariff](src/PensionTariff.jl)
     - [ProfitParticipationTariff](src/ProfitParticipationTariff.jl)
 
-To explore usage of this package use this [notebook](testAPI.ipynb)
+To explore usage of this package
+use the debugger on these scripts:
+  - [SingleLifeRiskTariff](debugcalcSLR.jl)
+  - [JointLifeRiskTariff](debugcalcSLR.jl)
+  - [PensionTariff](debugcalcPEN.jl)
+
+To populate the data base use this 
+ - [notebook](testAPI.ipynb) or
+ - [script](testAPI.jl)
+
+
