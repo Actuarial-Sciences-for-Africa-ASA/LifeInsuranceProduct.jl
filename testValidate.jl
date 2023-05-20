@@ -1,6 +1,6 @@
 using BitemporalPostgres, LifeInsuranceDataModel, LifeInsuranceProduct
 using SearchLight, TimeZones, Revise
-ENV["SEARCHLIGHT_USERNAME"] = "postgres"
+ENV["SEARCHLIGHT_USERNAME"] = ENV["USER"]
 ENV["SEARCHLIGHT_PASSWORD"] = "postgres"
 SearchLight.Configuration.load() |> SearchLight.connect
 cid = 1
