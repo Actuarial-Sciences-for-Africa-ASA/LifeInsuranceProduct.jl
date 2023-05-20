@@ -29,7 +29,6 @@ use the debugger on these scripts:
   - [PensionTariff](debugcalcPEN.jl)
 
 To populate the data base use this 
- - [notebook](testAPI.ipynb) or
  - [script](testAPI.jl)
 
 
