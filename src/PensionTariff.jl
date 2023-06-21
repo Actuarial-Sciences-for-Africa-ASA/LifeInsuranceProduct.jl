@@ -5,7 +5,8 @@ using Yields
 import LifeContingencies: V, ä     # pull the shortform notation into scope
 include("TariffUtilities.jl")
 using .TariffUtilities
-
+import LifeInsuranceDataModel.testpolymorph
+export testpolymorphPT
 
 """
   get_tariff_interface()
@@ -127,5 +128,8 @@ function calculate!(ti::TariffItemSection, params::Dict{String,Any})
   end
 end
 
+function LifeInsuranceDataModel.testpolymorph(::Val{1})
+  @info "testpolymorph PT 1 in PensionTariff "
+end
 
 end # module
