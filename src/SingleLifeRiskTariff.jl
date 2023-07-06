@@ -8,10 +8,11 @@ using .TariffUtilities
 
 
 """
-  get_tariff_interface()
+  LifeInsuranceDataModel.get_tariff_interface(::Val{3})
   Life Risk Insurance 
 """
-function get_tariff_interface()
+function LifeInsuranceDataModel.get_tariff_interface(::Val{3})
+  @info "get_tariff_interface in SingleLifeRiskTariff "
   let
     calls = JSON.parse("""
         {"calculation_target":
@@ -46,14 +47,14 @@ function get_tariff_interface()
     }""")
     partnerroles = [1]
     TariffInterface("Life Risk Insurance",
-      calls, calculate!, attributes, tariffitem_attributes, partnerroles)
+      calls, calculate!, validator, attributes, tariffitem_attributes, partnerroles)
   end
 end
 
 function calculate!(ti::TariffItemSection, params::Dict{String,Any})
   try
     #accessing tariff data
-    tariffparameters = get_tariff_interface().parameters
+    tariffparameters = get_tariff_interface(Val(2)).parameters
     mts = tariffparameters["mortality_tables"]
     i = tariffparameters["interest rate"]
 
@@ -84,6 +85,10 @@ function calculate!(ti::TariffItemSection, params::Dict{String,Any})
     println("wassis shief gegangen ")
     @error "ERROR: " exception = (err, catch_backtrace())
   end
+end
+
+function validator(tis::TariffItemSection)
+  @info "validating SingleLifeRisk Tariff"
 end
 
 

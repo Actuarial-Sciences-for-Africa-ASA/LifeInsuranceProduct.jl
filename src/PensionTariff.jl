@@ -5,14 +5,14 @@ using Yields
 import LifeContingencies: V, ä     # pull the shortform notation into scope
 include("TariffUtilities.jl")
 using .TariffUtilities
-import LifeInsuranceDataModel.testpolymorph
-export testpolymorphPT
+import LifeInsuranceDataModel.get_tariff_interface
 
 """
-  get_tariff_interface()
+  LifeInsuranceDataModel.get_tariff_interface(::Val{2})
   Life Risk Insurance 
 """
-function get_tariff_interface()
+function LifeInsuranceDataModel.get_tariff_interface(::Val{2})
+  @info "get_tariff_interface in PensionTariff "
   let
     calls = JSON.parse("""
         {"calculation_target":
@@ -56,21 +56,21 @@ function get_tariff_interface()
     }""")
     partnerroles = [1]
     TariffInterface("Life Risk Insurance",
-      calls, calculate!, attributes, tariffitem_attributes, partnerroles)
+      calls, calculate!, validate, attributes, tariffitem_attributes, partnerroles)
   end
 end
 
-function calculate!(ti::TariffItemSection, params::Dict{String,Any})
+function calculate!(tis::TariffItemSection, params::Dict{String,Any})
   try
 
     # accessiong partner data
-    pr = ti.partner_refs[1].ref.revision
+    pr = tis.partner_refs[1].ref.revision
     dob = pr.date_of_birth
     sex = pr.sex
     smoker = pr.smoker
 
     #accessing tariff data
-    tariffparameters = get_tariff_interface().parameters
+    tariffparameters = get_tariff_interface(Val(1)).parameters
     mts = tariffparameters["mortality_tables"]
     i = tariffparameters["interest rate"]
 
@@ -128,8 +128,8 @@ function calculate!(ti::TariffItemSection, params::Dict{String,Any})
   end
 end
 
-function LifeInsuranceDataModel.testpolymorph(::Val{1})
-  @info "testpolymorph PT 1 in PensionTariff "
+function validate(tis::TariffItemSection)
+  @info "validating Pension Tariff"
 end
 
 end # module

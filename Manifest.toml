@@ -607,9 +607,7 @@ version = "2.3.1"
 
 [[deps.LifeInsuranceDataModel]]
 deps = ["BitemporalPostgres", "ColorSchemes", "DataFrames", "DataStructures", "Dates", "Intervals", "JSON", "LibPQ", "Logging", "NBInclude", "Pkg", "Revise", "SearchLight", "SearchLightPostgreSQL", "Test", "TimeZones", "ToStruct"]
-git-tree-sha1 = "425908c1469568ef85dcd00214c0b0f56a3f8107"
-repo-rev = "main"
-repo-url = "https://github.com/Actuarial-Sciences-for-Africa-ASA/LifeInsuranceDataModel.jl"
+path = "/home/mf/dev/julia_depot/dev/LifeInsuranceDataModel"
 uuid = "4892898e-25d7-46ce-b5c3-dea2164303ac"
 version = "1.4.0"
 

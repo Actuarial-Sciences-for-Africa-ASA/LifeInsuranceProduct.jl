@@ -48,7 +48,7 @@ end
 
 
 pensionInsurance = Product()
-pr = ProductRevision(description="Pension")
+pr = ProductRevision(description="Pension", interface_id=1)
 
 pp = ProductPart()
 ppr = ProductPartRevision(
@@ -78,7 +78,7 @@ commit_workflow!(w0)
 
 
 singlelifeRiskInsurance = Product()
-pr = ProductRevision(description="Single Life Risk")
+pr = ProductRevision(description="Single Life Risk", interface_id=2)
 
 pp = ProductPart()
 ppr = ProductPartRevision(
@@ -108,7 +108,7 @@ commit_workflow!(w0)
 
 
 jointlifeRiskInsurance = Product()
-pr = ProductRevision(description="Joint Life Risk")
+pr = ProductRevision(description="Joint Life Risk", interface_id=3)
 
 pp = ProductPart()
 ppr = ProductPartRevision(
@@ -308,4 +308,4 @@ commit_workflow!(w1)
 include("testCalcPEN.jl")
 include("testCalcSLR.jl")
 include("testCalcJLR.jl")
-include("tesValidate.jl")
+include("testValidate.jl")
