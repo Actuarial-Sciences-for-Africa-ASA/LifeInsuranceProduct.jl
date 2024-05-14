@@ -19,10 +19,10 @@ ToStruct = "43ec2cc1-0e50-5406-a854-b7ff8fdb8dad"
 Yields = "d7e99b2f-e7f3-4d9e-9f01-2338fc023ad3"
 
 [compat]
-BitemporalPostgres = "1.7.0"
+BitemporalPostgres = "1.9"
 JSON = "0.21"
 LifeContingencies = "2"
-LifeInsuranceDataModel = "1.4.0"
+LifeInsuranceDataModel = "1.6"
 MortalityTables = "2"
 NBInclude = "2.3.0"
 Revise = "3"
