@@ -33,5 +33,6 @@ To populate the data base use this
  - [notebook](testAPI.ipynb) 
   
 To generate documentation 
-- [run makedocs.jl](makedocs.jl)
+- [exec makedocs.jl in Julia REPL](makedocs.jl)
+- View generated docs using the link for 8080 under the ports tab 
 
