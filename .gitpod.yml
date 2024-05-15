@@ -4,17 +4,15 @@ image:
 tasks:
   - before: >
       echo "PATH_add ~/julia/bin" > $GITPOD_ROOT/.envrc 
-      && echo 'export SEARCHLIGHT_USERNAME="gitpod"' >> $GITPOD_ROOT/.envrc 
-      && direnv allow $GITPOD_ROOT
+      && echo 'export SEARCHLIGHT_USERNAME="gitpod"' >> $$GITPOD_REPO_ROOT/.envrc 
+      && direnv allow $$GITPOD_REPO_ROOT
       && cd $GITPOD_REPO_ROOT
   - init: >
       cd ~ && curl -L https://storage.googleapis.com/julialang2/bin/linux/x64/$JULIA_MINOR_VERSION/julia-$JULIA_BUGFIX_VERSION-linux-x86_64.tar.gz 
       | tar -xzf - && mv julia-$JULIA_BUGFIX_VERSION julia
   - command: >
-      cd $GITPOD_REPO_ROOT && direnv reload 
-      && julia -e 'using Pkg; Pkg.activate("."); Pkg.instantiate();using NBInclude;@nbinclude("testAPI.ipynb")'
+      julia -e 'using Pkg; Pkg.activate("."); Pkg.instantiate();using NBInclude;@nbinclude("testAPI.ipynb")'
   - command: >
-      cd $GITPOD_ROOT  && direnv reload 
-      && julia --project=. -e 'using Pkg; Pkg.add("Documenter"); Pkg.instantiate(); include("docs/make.jl")'
+      julia --project=. -e 'using Pkg; Pkg.add("Documenter"); Pkg.instantiate(); include("docs/make.jl")'
       && python3 -m http.server 8080 -d docs/build
   - command: gp preview $(gp url 8080)
