@@ -10,5 +10,5 @@ tasks:
   - init: >
       cd ~ && curl -L https://storage.googleapis.com/julialang2/bin/linux/x64/$JULIA_MINOR_VERSION/julia-$JULIA_BUGFIX_VERSION-linux-x86_64.tar.gz 
       | tar -xzf - && mv julia-$JULIA_BUGFIX_VERSION julia
-  - command: ./makedoc.sh &
+  - command: python3 -m http.server 8080 -d docs/build &
   - command: gp open testAPI.ipynb

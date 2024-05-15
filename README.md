@@ -31,4 +31,7 @@ use the debugger on these scripts:
 To populate the data base use this 
  - [script](testAPI.jl) or this
  - [notebook](testAPI.ipynb) 
+  
+To generate documentation 
+- [run makedocs.jl](makedocs.jl)
 
