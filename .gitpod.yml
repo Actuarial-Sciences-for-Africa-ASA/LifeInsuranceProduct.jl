@@ -9,6 +9,11 @@ tasks:
       && echo 'export SEARCHLIGHT_USERNAME="gitpod"' >> /workspace/.envrc 
       && direnv allow /workspace
       && cd $GITPOD_REPO_ROOT
+  - command: >
+      cd $GITPOD_REPO_ROOT
       && julia -e 'using Pkg; Pkg.activate("."); Pkg.instantiate();using NBInclude;@nbinclude("testAPI.ipynb")'
-  - command: python3 -m http.server 8080 -d docs/build
+  - command: >
+      cd $GITPOD_REPO_ROOT
+      && julia --project=. -e 'using Pkg; Pkg.add("Documenter"); Pkg.instantiate(); include("docs/make.jl")'
+      && python3 -m http.server 8080 -d docs/build
   - command: gp preview $(gp url 8080)
