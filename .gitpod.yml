@@ -1,6 +1,5 @@
 
-image:
-  file: .gitpod.Dockerfile
+image: michaelfliegner/gitpodpgijulia
 
 tasks:
   - name: Script Task
