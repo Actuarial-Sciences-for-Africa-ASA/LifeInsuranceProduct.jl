@@ -24,9 +24,9 @@ comprising computation of
 
 To explore usage of this package
 use the debugger on these scripts:
-  - [SingleLifeRiskTariff](testCalcSLR.jl)
-  - [JointLifeRiskTariff](testCalcSLR.jl)
-  - [PensionTariff](testCalcPEN.jl)
+  - [SingleLifeRiskTariff](https://github.com/Actuarial-Sciences-for-Africa-ASA/LifeInsuranceProduct.jl/blob/main/testCalcJLR.jl)
+  - [JointLifeRiskTariff](https://github.com/Actuarial-Sciences-for-Africa-ASA/LifeInsuranceProduct.jl/blob/main/testCalcSLR.jl)
+  - [PensionTariff](https://github.com/Actuarial-Sciences-for-Africa-ASA/LifeInsuranceProduct.jl/blob/main/testCalcPEN.jl)
 
 To populate the data base use this 
  - [script](testAPI.jl) or this
