@@ -24,9 +24,9 @@ comprising computation of
 
 To explore usage of this package
 use the debugger on these scripts:
-  - [SingleLifeRiskTariff](debugcalcSLR.jl)
-  - [JointLifeRiskTariff](debugcalcSLR.jl)
-  - [PensionTariff](debugcalcPEN.jl)
+  - [SingleLifeRiskTariff](testCalcSLR.jl)
+  - [JointLifeRiskTariff](testCalcSLR.jl)
+  - [PensionTariff](testCalcPEN.jl)
 
 To populate the data base use this 
  - [script](testAPI.jl) or this
