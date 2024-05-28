@@ -1,3 +1,5 @@
-using Test
-
-@test(true)
+push!(LOAD_PATH, "../src")
+include("../testAPI.jl")
+include("../testCalcLJR.jl")
+include("../testCalcSLR.jl")
+include("../testCalcPEN.jl"))
