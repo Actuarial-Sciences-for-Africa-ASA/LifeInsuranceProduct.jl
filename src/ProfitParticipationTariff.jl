@@ -5,13 +5,14 @@ using Yields
 import LifeContingencies: V, ä     # pull the shortform notation into scope
 include("TariffUtilities.jl")
 using .TariffUtilities
-
+import LifeInsuranceDataModel.get_tariff_interface
 
 """
-  get_tariff_interface()
+  LifeInsuranceDataModel.get_tariff_interface(::Val{1})
   Profit Participation 
 """
-function get_tariff_interface()
+function LifeInsuranceDataModel.get_tariff_interface(::Val{1})
+  @info "get_tariff_interface in ProfitParticipationTariff "
   let
     calls = JSON.parse("""
         {"result": {"value": 0}}
@@ -29,7 +30,7 @@ function get_tariff_interface()
     tariffitem_attributes = JSON.parse("""{}""")
     partnerroles = [1]
     TariffInterface("Profit participation",
-      calls, calculate!, attributes, tariffitem_attributes, partnerroles)
+      calls, calculate!, validate, attributes, tariffitem_attributes, partnerroles)
   end
 end
 
@@ -41,5 +42,8 @@ function calculate!(interface_id::Val{2}, ti::TariffItemSection, params::Dict{St
   params["result"]["value"] = ""
 end
 
+function validate(tis::TariffItemSection)
+  @info "validating Profit Participation Tariff"
+end
 
 end # module

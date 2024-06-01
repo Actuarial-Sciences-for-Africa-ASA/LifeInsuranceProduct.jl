@@ -22,4 +22,35 @@ comprising computation of
     - [PensionTariff](src/PensionTariff.jl)
     - [ProfitParticipationTariff](src/ProfitParticipationTariff.jl)
 
-To explore usage of this package use this [notebook](testAPI.ipynb)
+To explore usage of this package
+use the debugger on these scripts:
+  - [SingleLifeRiskTariff](https://github.com/Actuarial-Sciences-for-Africa-ASA/LifeInsuranceProduct.jl/blob/main/testCalcJLR.jl)
+  - [JointLifeRiskTariff](https://github.com/Actuarial-Sciences-for-Africa-ASA/LifeInsuranceProduct.jl/blob/main/testCalcSLR.jl)
+  - [PensionTariff](https://github.com/Actuarial-Sciences-for-Africa-ASA/LifeInsuranceProduct.jl/blob/main/testCalcPEN.jl)
+
+To populate the data base use this 
+ - [script](testAPI.jl) or this
+ - [notebook](testAPI.ipynb) 
+  
+To generate documentation 
+- [exec makedocs.jl in Julia REPL](makedocs.jl)
+- View generated docs using the link for 8080 under the ports tab 
+
+# Usage
+A web app using this module for persistence is being built at https://github.com/Actuarial-Sciences-for-Africa-ASA/GenieBuiltLifeProto.jl
+
+## Next Steps
+
+Click the button below to start a new development environment:
+
+The gitpod workspace uses a Docker a public image: [michaelfliegner/gitpodpgijulia](https://hub.docker.com/repository/docker/michaelfliegner/gitpodpgijulia/general)
+
+[The Dockerfile for this image resides here](https://github.com/Actuarial-Sciences-for-Africa-ASA/gitpod-pg-ijulia-Dockerfile)
+
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/?autostart=true#https://github.com/Actuarial-Sciences-for-Africa-ASA/LifeInsuranceProduct.jl) 
+
+[On startup vscode will open this jupyter notebook:](testAPI.ipynb)
+
+
+
+

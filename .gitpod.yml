@@ -1,0 +1,13 @@
+
+image: michaelfliegner/gitpodpgijulia
+
+tasks:
+  - name: Script Task
+    init: >
+      echo 'init script' 
+      && echo 'export SEARCHLIGHT_USERNAME="gitpod"' > /workspace/.envrc 
+      && direnv allow /workspace
+  - command: python3 -m http.server 8080 -d docs/build
+  - command: julia -e 'using Pkg; Pkg.activate("."); Pkg.instantiate();include("workflowtest.jl")'
+  - command: julia -e 'include("init.jl")'
+  - command: gp open testAPI.ipynb
